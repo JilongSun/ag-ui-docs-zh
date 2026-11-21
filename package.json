@@ -1,0 +1,10 @@
+{
+  "name": "ag-ui-docs-zh",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-upstream.mjs",
+    "check": "node scripts/check-parity.mjs && node scripts/check-links.mjs && node scripts/check-terms.mjs && node scripts/check-coverage.mjs",
+    "remap-anchors": "node scripts/remap-anchors.mjs"
+  }
+}

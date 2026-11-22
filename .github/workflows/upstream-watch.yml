@@ -15,6 +15,9 @@ permissions:
   contents: read
   issues: write
 
+env:
+  TITLE: 上游文档变更待处理
+
 jobs:
   watch:
     runs-on: ubuntu-latest
@@ -25,34 +28,57 @@ jobs:
         with:
           node-version: 20
 
-      - name: 对比锁文件基线与上游
+      - name: 找到跟踪 issue，读取上次报告位置
+        id: issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUM=$(gh issue list --state open --limit 100 --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          echo "number=$NUM" >> "$GITHUB_OUTPUT"
+          if [ -z "$NUM" ]; then
+            echo "since=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BODY=$(gh issue view "$NUM" --json body --jq .body)
+          SINCE=$(printf '%s' "$BODY" \
+            | sed -n 's/.*watch:head=\([0-9a-f]\{7,40\}\).*/\1/p' | head -1)
+          echo "since=$SINCE" >> "$GITHUB_OUTPUT"
+
+      - name: 对比基线与上游
         id: watch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_INPUT: ${{ inputs.head }}
+          SINCE: ${{ steps.issue.outputs.since }}
         run: |
-          if [ -n "$HEAD_INPUT" ]; then
-            node scripts/check-upstream-changes.mjs --head "$HEAD_INPUT"
-          else
-            node scripts/check-upstream-changes.mjs
-          fi
+          ARGS=""
+          if [ -n "$HEAD_INPUT" ]; then ARGS="$ARGS --head $HEAD_INPUT"; fi
+          if [ -n "$SINCE" ]; then ARGS="$ARGS --since $SINCE"; fi
+          node scripts/check-upstream-changes.mjs $ARGS
 
       - name: 写入运行摘要
         if: always() && hashFiles('sync-report.md') != ''
         run: cat sync-report.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: 开或更新跟踪 issue
+      - name: 提交报告
         if: steps.watch.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ steps.watch.outputs.head_sha }}
+          NUM: ${{ steps.issue.outputs.number }}
         run: |
-          TITLE="上游文档变更待处理"
-          NUM=$(gh issue list --state open --limit 100 --json number,title \
-            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
-          if [ -n "$NUM" ]; then
-            gh issue comment "$NUM" --body-file sync-report.md
-            echo "已在上游变更待处理 #$NUM 追加报告" >> "$GITHUB_STEP_SUMMARY"
-          else
+          set -euo pipefail
+          printf '\n<!-- watch:head=%s -->\n' "$HEAD_SHA" >> sync-report.md
+          if [ -z "$NUM" ]; then
             gh issue create --title "$TITLE" --body-file sync-report.md
-            echo "已新建 上游文档变更待处理" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
+          gh issue comment "$NUM" --body-file sync-report.md
+          BODY=$(gh issue view "$NUM" --json body --jq .body)
+          if printf '%s' "$BODY" | grep -q 'watch:head='; then
+            NEW=$(printf '%s' "$BODY" | sed "s/watch:head=[0-9a-f]*/watch:head=$HEAD_SHA/")
+          else
+            NEW=$(printf '%s\n\n<!-- watch:head=%s -->' "$BODY" "$HEAD_SHA")
+          fi
+          gh issue edit "$NUM" --body "$NEW"

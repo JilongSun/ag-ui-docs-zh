@@ -11,6 +11,13 @@ const refIndex = args.indexOf("--ref");
 const explicitRef = refIndex !== -1 ? args[refIndex + 1] : null;
 const localIndex = args.indexOf("--from-local");
 const localDir = localIndex !== -1 ? args[localIndex + 1] : null;
+const tagIndex = args.indexOf("--protocol-tag");
+const protocolTag = tagIndex !== -1 ? args[tagIndex + 1] : null;
+const tagMatch = protocolTag?.match(/^ag-ui-protocol@(\d+\.\d+\.\d+)$/);
+if (protocolTag && !tagMatch) {
+  console.error(`--protocol-tag must look like ag-ui-protocol@1.0.0, got "${protocolTag}"`);
+  process.exit(2);
+}
 
 async function readLock() {
   try {
@@ -132,6 +139,8 @@ if (update || !lock) {
     upstream: `${UPSTREAM_OWNER}/${UPSTREAM_REPO}`,
     ref: sha,
     sha,
+    protocolTag: tagMatch ? protocolTag : lock?.protocolTag ?? null,
+    protocolVersion: tagMatch ? tagMatch[1] : lock?.protocolVersion ?? null,
     fetchedAt: new Date().toISOString(),
     source: localDir ? `local checkout + api spot-check (${sha})` : "github",
     files: sorted,

@@ -20,6 +20,7 @@
 | 项目 | 值 |
 | --- | --- |
 | 上游仓库 | `ag-ui-protocol/ag-ui` |
+| 协议版本 | `1.0.0`（tag [`ag-ui-protocol@1.0.0`](https://github.com/ag-ui-protocol/ag-ui/releases/tag/ag-ui-protocol@1.0.0)） |
 | 上游 commit | [`a6f2539a2`](https://github.com/ag-ui-protocol/ag-ui/tree/a6f2539a2ad9ba016129217637b83b7068adc6c1)（2026-11-20） |
 | 逐文件哈希 | [upstream.lock.json](./upstream.lock.json) |
 
@@ -51,25 +52,28 @@ CI 在每次 push 与 PR 上跑同一组检查，并要求上游哈希与锁文�
 
 ## 上游变更监视
 
-[upstream-watch](./.github/workflows/upstream-watch.yml) 每周一 09:00（北京时间）对比锁文件基线与上游 `main`，按严重度判定：
+[upstream-watch](./.github/workflows/upstream-watch.yml) 每周一 09:00（北京时间）跑一次，对比基线与上游 `main`：
 
-| 判定 | 触发条件 | 是否开 issue |
+| 判定 | 触发条件 | 通知 |
 | --- | --- | --- |
-| `spec-release` | 出现新的规范版本目录（如 `docs/spec/1.1/`），或 `docs/docs.json` 的版本列表变化 | 是 |
-| `spec` | 已冻结规范 `docs/spec/1.0/**` 有增删改 | 是 |
-| `concepts` | `docs/concepts/**` 有增删改 | 是 |
-| `draft` | 仅 `docs/spec/draft/**` 变化（1.1 工作区，不翻译） | 否，只写运行摘要 |
-| `none` | 范围内无变化 | 否 |
+| `spec-release` | 出现比锁定版本更新的 `ag-ui-protocol@X.Y.Z` tag，且属于 major 或 minor | issue |
+| `spec` | `docs/spec/1.0/**` 有增删改 | issue |
+| `concepts` | `docs/concepts/**` 有增删改 | issue |
+| `draft` | 仅 `docs/spec/draft/**` 与导航变化（1.1 工作区，不翻译） | 无，只写运行摘要 |
+| `none` | 范围内无变化 | 无 |
 
-需要行动时，会在 issue「上游文档变更待处理」里给出逐文件清单，并把每个上游路径映射到对应的译文文件。issue 已存在则追加评论，不重复刷屏。处理完把锁文件推进到新 SHA，再关掉 issue。
+patch 版本（如 `1.0.0 → 1.0.1`）按约定不跟随，只在报告里记一笔，不触发通知。
 
-本地预览一次判定（不联网，用本地 clone）：
+需要行动时，在 issue「上游文档变更待处理」里给出逐文件清单，每个上游路径都映射到对应译文。**报告是增量的**：issue body 里记录了上次报告到的提交，之后每次只列那之后的新变化，不会重复列同一页。
+
+本地预演（用本地 clone，不联网）：
 
 ```bash
-npm run watch -- --local-repo ../ag-ui
+npm run watch -- --local-repo ../ag-ui                    # 对比 clone 的 HEAD
+npm run watch -- --local-repo ../ag-ui --head origin/main # 对比上游主干
 ```
 
-> 注意：GitHub 会在仓库连续 60 天无活动后暂停定时工作流，重新启用即可；`workflow_dispatch` 可随时手动触发。
+> GitHub 在仓库连续 60 天无活动后会暂停定时工作流，重新启用即可；`workflow_dispatch` 可随时手动触发。
 
 ## 发布节奏
 

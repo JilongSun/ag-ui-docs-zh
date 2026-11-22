@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 /**
- * 对比 upstream.lock.json 记录的基线与上游当前 HEAD，生成待处理报告。
+ * 对比基线快照与上游当前状态，生成待处理报告。
  *
- * 分类与严重度（取最高者）：
- *   spec-release  出现新的规范版本目录（docs/spec/1.0 → docs/spec/1.1），
- *                 或 docs.json 的版本列表发生变化 —— 对应 major/minor 发布
- *   spec          已冻结版本（docs/spec/1.0/**）有任何增删改
- *   concepts      docs/concepts/** 有任何增删改
- *   draft         仅 docs/spec/draft/** 变化；不翻译，仅供参考，不触发通知
+ * 判定（取最高者）：
+ *   spec-release  出现比锁文件更新的大/小版本 tag（ag-ui-protocol@X.Y.Z）
+ *   spec          已冻结规范 docs/spec/1.0/** 有增删改
+ *   concepts      docs/concepts/** 有增删改
+ *   draft         仅 docs/spec/draft/** 与导航变化，不翻译，不触发通知
  *   none          范围内无变化
  *
  * 用法：
- *   node scripts/check-upstream-changes.mjs                        # CI：读锁文件 vs 上游 main
- *   node scripts/check-upstream-changes.mjs --head <sha>
- *   node scripts/check-upstream-changes.mjs --local-repo ../ag-ui # 本地：用本地 clone，不联网
+ *   node scripts/check-upstream-changes.mjs                       # CI：锁文件基线 vs 上游 main
+ *   node scripts/check-upstream-changes.mjs --since <sha>          # 只报该提交之后的变化
+ *   node scripts/check-upstream-changes.mjs --local-repo ../ag-ui  # 本地预演，对比 clone 的 HEAD
+ *   node scripts/check-upstream-changes.mjs --local-repo ../ag-ui --head origin/main  # 对比上游主干
  *   node scripts/check-upstream-changes.mjs --base <sha> --head <sha> --local-repo ../ag-ui
  *
- * 输出：sync-report.md，以及 $GITHUB_OUTPUT 里的 severity / has_changes / headline。
+ * 输出：sync-report.md，以及 $GITHUB_OUTPUT 的 severity / has_changes / headline / head_sha。
  */
 import fs from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -32,27 +32,50 @@ const localRepo = arg("local-repo");
 const REPORT = arg("report", "sync-report.md");
 const DOCS_JSON = "docs/docs.json";
 const WATCHED_PREFIXES = ["docs/concepts/", "docs/spec/"];
-const VERSION_DIR = /^docs\/spec\/(\d+\.\d+)\//;
+const PROTOCOL_TAG = /^ag-ui-protocol@(\d+)\.(\d+)\.(\d+)$/;
 
 const lock = JSON.parse(await fs.readFile(LOCK_FILE, "utf8"));
-const base = arg("base", lock.sha);
-const head = arg("head") || (localRepo ? "origin/main" : "main");
+const since = arg("since");
+const base = arg("base", since || lock.sha);
+const head = arg("head") || (localRepo ? "HEAD" : "main");
 
 function git(args) {
   return execFileSync("git", ["-C", localRepo, ...args], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 }
 
-async function githubJson(url, accept = "application/vnd.github+json") {
+async function githubJson(url) {
   const res = await fetch(url, {
     headers: {
-      Accept: accept,
+      Accept: "application/vnd.github+json",
       "User-Agent": "ag-ui-docs-zh-watch",
       ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
     },
     signal: AbortSignal.timeout(30000),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
-  return res;
+  return res.json();
+}
+
+/** 上游协议版本 tag，按语义顺序升序。 */
+async function protocolTags() {
+  let names;
+  if (localRepo) {
+    names = git(["tag", "-l", "ag-ui-protocol@*"]).split("\n");
+  } else {
+    const refs = await githubJson(
+      `https://api.github.com/repos/${UPSTREAM_OWNER}/${UPSTREAM_REPO}/git/matching-refs/tags/ag-ui-protocol%40`,
+    );
+    names = refs.map((ref) => ref.ref.replace("refs/tags/", ""));
+  }
+  return names
+    .map((name) => {
+      const match = name.trim().match(PROTOCOL_TAG);
+      return match
+        ? { name: name.trim(), version: `${match[1]}.${match[2]}.${match[3]}`, parts: match.slice(1, 4).map(Number) }
+        : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.parts[0] - b.parts[0] || a.parts[1] - b.parts[1] || a.parts[2] - b.parts[2]);
 }
 
 /** 返回 { sha, date, files: Map<path, blobSha> } */
@@ -60,22 +83,19 @@ async function snapshot(ref) {
   if (localRepo) {
     const sha = git(["rev-parse", ref]).trim();
     const date = git(["log", "-1", "--format=%cs", sha]).trim();
-    const out = git(["ls-tree", "-r", sha, "--", "docs/concepts", "docs/spec", DOCS_JSON]);
     const files = new Map();
-    for (const line of out.split("\n")) {
-      if (!line.trim()) continue;
-      const [, meta, path] = line.match(/^(\d+ \w+ [0-9a-f]+)\t(.+)$/) ?? [];
-      if (!path) continue;
-      files.set(path, meta.split(" ")[2]);
+    for (const line of git(["ls-tree", "-r", sha, "--", "docs/concepts", "docs/spec", DOCS_JSON]).split("\n")) {
+      const parsed = line.match(/^\d+ \w+ ([0-9a-f]+)\t(.+)$/);
+      if (parsed) files.set(parsed[2], parsed[1]);
     }
     return { sha, date, files };
   }
-  const commit = await (await githubJson(
+  const commit = await githubJson(
     `https://api.github.com/repos/${UPSTREAM_OWNER}/${UPSTREAM_REPO}/commits/${encodeURIComponent(ref)}`,
-  )).json();
-  const tree = await (await githubJson(
+  );
+  const tree = await githubJson(
     `https://api.github.com/repos/${UPSTREAM_OWNER}/${UPSTREAM_REPO}/git/trees/${commit.sha}?recursive=1`,
-  )).json();
+  );
   if (tree.truncated) throw new Error("upstream tree is truncated; cannot diff reliably");
   const files = new Map();
   for (const entry of tree.tree) {
@@ -85,39 +105,6 @@ async function snapshot(ref) {
     }
   }
   return { sha: commit.sha, date: (commit.commit?.committer?.date ?? "").slice(0, 10), files };
-}
-
-async function docsJsonVersions(sha) {
-  let text;
-  if (localRepo) {
-    try {
-      text = git(["show", `${sha}:${DOCS_JSON}`]);
-    } catch {
-      return [];
-    }
-  } else {
-    try {
-      text = await (await githubJson(
-        `https://api.github.com/repos/${UPSTREAM_OWNER}/${UPSTREAM_REPO}/contents/${DOCS_JSON}?ref=${sha}`,
-        "application/vnd.github.raw",
-      )).text();
-    } catch {
-      return [];
-    }
-  }
-  try {
-    const versions = [];
-    const walk = (node) => {
-      if (Array.isArray(node)) return node.forEach(walk);
-      if (!node || typeof node !== "object") return;
-      if (Array.isArray(node.versions)) versions.push(...node.versions.map((v) => v.version));
-      Object.values(node).forEach(walk);
-    };
-    walk(JSON.parse(text));
-    return versions;
-  } catch {
-    return [];
-  }
 }
 
 const before = await snapshot(base);
@@ -130,21 +117,16 @@ for (const [path, sha] of after.files) {
   if (!before.files.has(path)) added.push(path);
   else if (before.files.get(path) !== sha) modified.push(path);
 }
-for (const path of before.files.keys()) {
-  if (!after.files.has(path)) removed.push(path);
-}
+for (const path of before.files.keys()) if (!after.files.has(path)) removed.push(path);
 
-// 同一 blob 出现在删除与新增两侧 = 重命名
-const addedBySha = new Map();
-for (const path of added) addedBySha.set(after.files.get(path), path);
+const addedBySha = new Map(added.map((path) => [after.files.get(path), path]));
 const renames = [];
 for (const path of [...removed]) {
   const twin = addedBySha.get(before.files.get(path));
-  if (twin) {
-    renames.push([path, twin]);
-    removed.splice(removed.indexOf(path), 1);
-    added.splice(added.indexOf(twin), 1);
-  }
+  if (!twin) continue;
+  renames.push([path, twin]);
+  removed.splice(removed.indexOf(path), 1);
+  added.splice(added.indexOf(twin), 1);
 }
 
 const bucket = (path) => {
@@ -155,41 +137,43 @@ const bucket = (path) => {
   return "other";
 };
 
-const specDirsBefore = new Set([...before.files.keys()].filter((p) => VERSION_DIR.test(p)).map((p) => p.match(VERSION_DIR)[1]));
-const specDirsAfter = new Set([...after.files.keys()].filter((p) => VERSION_DIR.test(p)).map((p) => p.match(VERSION_DIR)[1]));
-const newSpecVersions = [...specDirsAfter].filter((v) => !specDirsBefore.has(v) && v !== "draft");
-const droppedSpecVersions = [...specDirsBefore].filter((v) => !specDirsAfter.has(v));
-
-const versionsBefore = await docsJsonVersions(before.sha);
-const versionsAfter = await docsJsonVersions(after.sha);
-const navVersionsChanged = JSON.stringify(versionsBefore) !== JSON.stringify(versionsAfter);
-
 const changes = [
-  ...[...added].map((path) => ({ kind: "新增", path, bucket: bucket(path) })),
-  ...[...modified].map((path) => ({ kind: "修改", path, bucket: bucket(path) })),
-  ...[...removed].map((path) => ({ kind: "删除", path, bucket: bucket(path) })),
+  ...added.map((path) => ({ kind: "新增", path, bucket: bucket(path) })),
+  ...modified.map((path) => ({ kind: "修改", path, bucket: bucket(path) })),
+  ...removed.map((path) => ({ kind: "删除", path, bucket: bucket(path) })),
   ...renames.map(([from, to]) => ({ kind: "重命名", path: `${from} → ${to}`, bucket: bucket(to) })),
 ];
 
 const counts = changes.reduce((acc, c) => ({ ...acc, [c.bucket]: (acc[c.bucket] ?? 0) + 1 }), {});
-const isSpecRelease = newSpecVersions.length > 0 || droppedSpecVersions.length > 0 || navVersionsChanged;
+
+const tags = await protocolTags();
+const lockedParts = lock.protocolVersion ? lock.protocolVersion.split(".").map(Number) : null;
+const cmp = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+const newerTags = lockedParts ? tags.filter((tag) => cmp(tag.parts, lockedParts) > 0) : [];
+const latest = newerTags.at(-1) ?? null;
+const releaseBump = latest
+  ? latest.parts[0] !== lockedParts[0]
+    ? "major"
+    : latest.parts[1] !== lockedParts[1]
+      ? "minor"
+      : "patch"
+  : null;
+
+const releaseActionable = releaseBump === "major" || releaseBump === "minor";
 
 let severity = "none";
-if (isSpecRelease) severity = "spec-release";
+if (releaseActionable) severity = "spec-release";
 else if (counts.spec) severity = "spec";
 else if (counts.concepts) severity = "concepts";
 else if (counts.draft || counts.nav || counts.other) severity = "draft";
-else if (changes.length) severity = "draft";
 
-const headline = severity === "spec-release"
-  ? `规范版本更新${newSpecVersions.length ? `：新增 ${newSpecVersions.join("、")}` : ""}`
-  : severity === "spec"
-    ? `1.0 规范有 ${counts.spec} 处变化`
-    : severity === "concepts"
-      ? `concepts 有 ${counts.concepts} 处变化`
-      : severity === "draft"
-        ? "仅 draft/导航变化"
-        : "无变化";
+const headline = {
+  "spec-release": `协议发布 ${lock.protocolVersion} → ${latest?.version}（${releaseBump}）`,
+  spec: `1.0 规范有 ${counts.spec} 处变化`,
+  concepts: `concepts 有 ${counts.concepts} 处变化`,
+  draft: latest ? `仅有 patch 版本 ${latest.version} 与 draft/导航变化` : "仅 draft/导航变化",
+  none: latest ? `仅有 patch 版本 ${latest.version}，按约定不跟随` : "无变化",
+}[severity];
 
 const translated = lock.files ?? {};
 const section = (title, bucketName, hint) => {
@@ -198,45 +182,60 @@ const section = (title, bucketName, hint) => {
   const lines = [`### ${title}`, ""];
   if (hint) lines.push(hint, "");
   for (const row of rows) {
-    const path = row.path;
-    const zh = translated[path] ? `（译文：content/zh/${path.replace(/^docs\//, "").replace(/\.mdx$/, ".md")}）` : "（未翻译）";
-    lines.push(`- ${row.kind} \`${path}\`${row.kind === "重命名" ? "" : " " + zh}`);
+    const zh = translated[row.path]
+      ? `（译文：\`content/zh/${row.path.replace(/^docs\//, "").replace(/\.mdx$/, ".md")}\`）`
+      : "（未翻译）";
+    lines.push(`- ${row.kind} \`${row.path}\`${row.kind === "重命名" ? "" : " " + zh}`);
   }
-  lines.push("");
-  return lines.join("\n");
+  return `${lines.join("\n")}\n`;
 };
 
+const baseLabel = since ? "上次报告" : "锁文件基线";
 const lines = [
   "# 上游文档变更报告",
   "",
   "| 项 | 值 |",
   "| --- | --- |",
-  `| 基线 commit | \`${before.sha.slice(0, 9)}\`（${before.date || "未知"}） |`,
+  `| ${baseLabel} | \`${before.sha.slice(0, 9)}\`（${before.date || "未知"}） |`,
   `| 上游 commit | \`${after.sha.slice(0, 9)}\`（${after.date || "未知"}） |`,
   `| 判定 | **${severity}** — ${headline} |`,
   "",
 ];
 
-if (isSpecRelease) {
-  lines.push("## 规范版本变化", "");
-  if (newSpecVersions.length) lines.push(`- 新增版本目录：${newSpecVersions.map((v) => `\`docs/spec/${v}/\``).join("、")}`);
-  if (droppedSpecVersions.length) lines.push(`- 移除版本目录：${droppedSpecVersions.map((v) => `\`docs/spec/${v}/\``).join("、")}`);
-  if (navVersionsChanged) {
-    lines.push(`- \`docs/docs.json\` 版本列表：${versionsBefore.join(" / ") || "（无）"} → ${versionsAfter.join(" / ") || "（无）"}`);
-  }
-  lines.push("", "这对应一次 major/minor 节点：按发布节奏需要对整批新版本做翻译，而不是逐页跟改。", "");
+if (latest && !releaseActionable) {
+  lines.push(
+    "## 协议版本",
+    "",
+    `- 已锁定版本：\`${lock.protocolVersion}\``,
+    `- 上游最新版本：\`${latest.version}\`（tag \`${latest.name}\`）`,
+    `- 变更类型：**${releaseBump}** — 按约定只跟随 major/minor，patch 不触发翻译。`,
+    "",
+  );
+}
+
+if (releaseActionable) {
+  lines.push(
+    "## 协议发布",
+    "",
+    `- 已锁定版本：\`${lock.protocolVersion}\`${lock.protocolTag ? `（tag \`${lock.protocolTag}\`）` : ""}`,
+    `- 上游最新版本：\`${latest.version}\`（tag \`${latest.name}\`）`,
+    `- 变更类型：**${releaseBump}**`,
+    "",
+    "这是 major/minor 节点：按发布节奏应对新版本做整批翻译，而不是逐页跟改。",
+    "",
+  );
 }
 
 const hasActionable = ["spec-release", "spec", "concepts"].includes(severity);
 lines.push(
-  section("规范页面变化（docs/spec）", "spec", "这些页面关系协议契约，优先级最高。"),
-  section("概念文档变化（docs/concepts）", "concepts", "这些页面解释设计取向，读者理解依赖它。"),
+  section("规范页面变化（docs/spec/1.0）", "spec", "关系协议契约，优先级最高。"),
+  section("概念文档变化（docs/concepts）", "concepts", "解释设计取向，读者理解依赖它。"),
   section("导航变化（docs/docs.json）", "nav", "只影响站点目录结构，通常无需改译文。"),
-  section("草案变化（docs/spec/draft）", "draft", "1.1 工作区，尚未冻结，暂不翻译，仅作观察。"),
+  section("草案变化（docs/spec/draft）", "draft", "1.1 工作区，未冻结，不翻译，仅作观察。"),
   section("其他", "other"),
 );
 
-if (!changes.length) {
+if (!changes.length && !latest) {
   lines.push("范围内无变化。", "");
 } else if (!hasActionable) {
   lines.push("以上均不影响译文，本轮无需行动。", "");
@@ -249,17 +248,16 @@ if (!changes.length) {
     "3. 全部评估完后，把锁文件推进到新基线并重跑校验：",
     "",
     "   ```bash",
-    `   node scripts/fetch-upstream.mjs --update --ref ${after.sha}`,
+    `   node scripts/fetch-upstream.mjs --update --ref ${after.sha}${latest ? ` --protocol-tag ${latest.name}` : ""}`,
     "   npm run check",
     "   ```",
     "",
-    "4. 提交时把锁文件与译文改动放在同一个 commit 里，方便回溯「译文对应哪一版原文」。",
+    "4. 锁文件与译文改动放在同一个 commit 里，方便回溯「译文对应哪一版原文」。",
     "",
   );
 }
 
-const report = `${lines.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd()}\n`;
-await fs.writeFile(REPORT, report);
+await fs.writeFile(REPORT, `${lines.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd()}\n`);
 
 if (process.env.GITHUB_OUTPUT) {
   await fs.appendFile(
@@ -268,5 +266,8 @@ if (process.env.GITHUB_OUTPUT) {
   );
 }
 
-console.log(`check-upstream-changes: ${severity} — ${headline}（${changes.length} 处变化）`);
+console.log(`check-upstream-changes: ${severity} — ${headline}（${changes.length} 处文件变化）`);
+if (latest) {
+  console.log(`  协议 tag：锁定 ${lock.protocolVersion} → 最新 ${latest.version}（${releaseBump}）`);
+}
 console.log(`报告已写入 ${REPORT}`);

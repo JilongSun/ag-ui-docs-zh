@@ -2,7 +2,9 @@
   "upstream": "ag-ui-protocol/ag-ui",
   "ref": "a6f2539a2ad9ba016129217637b83b7068adc6c1",
   "sha": "a6f2539a2ad9ba016129217637b83b7068adc6c1",
-  "fetchedAt": "2026-11-21T14:02:05.074Z",
+  "protocolTag": "ag-ui-protocol@1.0.0",
+  "protocolVersion": "1.0.0",
+  "fetchedAt": "2026-11-22T06:36:39.839Z",
   "source": "local checkout + api spot-check (a6f2539a2ad9ba016129217637b83b7068adc6c1)",
   "files": {
     "docs/concepts/agents.mdx": "aebc873cce85d52d15a4ff53bca8116e6f9be88a9ea67b1350c30fb67eea6fc7",

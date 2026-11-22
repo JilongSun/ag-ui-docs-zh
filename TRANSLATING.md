@@ -109,3 +109,10 @@ node scripts/check-coverage.mjs   # 上游每个文件都有译文
 ## 九、发布节奏
 
 只跟随上游**大版本与小版本**（例如 1.0 → 1.1），不跟随每次 commit 与 patch。每次同步在 README 里更新「对应上游 commit」，并打形如 `v1.0.0-zh.1` 的标签。
+
+上游变化由每周的 [upstream-watch](./.github/workflows/upstream-watch.yml) 汇总成 issue。收到 issue 后：
+
+1. 只处理 issue 里列出的**已译页面**；`draft/` 与未翻译区域的条目忽略。
+2. 判断是措辞微调还是语义变化——只有语义变化才动译文。
+3. 改完后按「八、提交前自检」跑完四项检查，把 `upstream.lock.json` 与译文放在同一个 commit 里推进到新 SHA。
+4. 关掉 issue。

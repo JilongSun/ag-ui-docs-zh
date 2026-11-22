@@ -1,0 +1,58 @@
+name: upstream-watch
+
+on:
+  schedule:
+    # 每周一 01:00 UTC（北京时间 09:00）
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+    inputs:
+      head:
+        description: "对比到的上游 ref（留空则用 main）"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 对比锁文件基线与上游
+        id: watch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_INPUT: ${{ inputs.head }}
+        run: |
+          if [ -n "$HEAD_INPUT" ]; then
+            node scripts/check-upstream-changes.mjs --head "$HEAD_INPUT"
+          else
+            node scripts/check-upstream-changes.mjs
+          fi
+
+      - name: 写入运行摘要
+        if: always() && hashFiles('sync-report.md') != ''
+        run: cat sync-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 开或更新跟踪 issue
+        if: steps.watch.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="上游文档变更待处理"
+          NUM=$(gh issue list --state open --limit 100 --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$NUM" ]; then
+            gh issue comment "$NUM" --body-file sync-report.md
+            echo "已在上游变更待处理 #$NUM 追加报告" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh issue create --title "$TITLE" --body-file sync-report.md
+            echo "已新建 上游文档变更待处理" >> "$GITHUB_STEP_SUMMARY"
+          fi

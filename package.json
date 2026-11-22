@@ -5,6 +5,7 @@
   "scripts": {
     "fetch": "node scripts/fetch-upstream.mjs",
     "check": "node scripts/check-parity.mjs && node scripts/check-links.mjs && node scripts/check-terms.mjs && node scripts/check-coverage.mjs",
-    "remap-anchors": "node scripts/remap-anchors.mjs"
+    "remap-anchors": "node scripts/remap-anchors.mjs",
+    "watch": "node scripts/check-upstream-changes.mjs"
   }
 }

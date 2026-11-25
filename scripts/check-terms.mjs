@@ -13,6 +13,14 @@ const FORBIDDEN = [
 
 const LEFTOVER_COMPONENTS = /<(Note|Warning|Tip|Card|CardGroup|Frame|Tabs|Tab|CodeGroup|Accordion|AccordionGroup|Steps|Step|Columns|Column)\b/;
 
+// 译文是纯 Markdown，任何 JSX 都渲染不出来：站点特有的内联样式徽章、属性表达式等。
+const LEFTOVER_JSX = [
+  [/<(span|div|br|p|a|strong|em|code|img)\b(?=[^>]*(?:style=|className=))/i, "JSX 元素"],
+  [/\bstyle=\{\{/, "JSX 内联样式"],
+  [/\bclassName=/, "JSX className"],
+  [/\{\/\*/, "MDX 注释"],
+];
+
 async function walk(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const files = [];
@@ -42,6 +50,12 @@ for (const file of files) {
   lines.forEach((line, index) => {
     if (LEFTOVER_COMPONENTS.test(line)) {
       problems.push(`${file}:${index + 1}: untranslated Mintlify component ${line.trim().slice(0, 40)}`);
+    }
+    for (const [pattern, label] of LEFTOVER_JSX) {
+      if (pattern.test(line)) {
+        problems.push(`${file}:${index + 1}: 残留 ${label}，纯 Markdown 无法渲染 — ${line.trim().slice(0, 60)}`);
+        break;
+      }
     }
     for (const code of line.matchAll(/`([^`]+)`/g)) {
       if (/[\u4e00-\u9fff]/.test(code[1])) {

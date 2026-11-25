@@ -613,19 +613,7 @@ sequenceDiagram
 
 ### Meta 事件（event）
 
-<span
-  style={{
-    backgroundColor: "#3b82f6",
-    color: "white",
-    padding: "2px 6px",
-    borderRadius: "4px",
-    fontSize: "0.75em",
-    fontWeight: "bold",
-  }}
->
-  DRAFT
-</span>
-[查看提案](https://docs.ag-ui.com/drafts/meta-events)
+**草案（DRAFT）** [查看提案](https://docs.ag-ui.com/drafts/meta-events)
 
 Meta 事件（event）提供独立于 Agent 运行（run）的注解与信号，例如用户反馈或外部系统事件（event）。
 
@@ -640,19 +628,7 @@ Meta 事件（event）提供独立于 Agent 运行（run）的注解与信号，
 
 ### 修改后的生命周期事件（event）
 
-<span
-  style={{
-    backgroundColor: "#3b82f6",
-    color: "white",
-    padding: "2px 6px",
-    borderRadius: "4px",
-    fontSize: "0.75em",
-    fontWeight: "bold",
-  }}
->
-  DRAFT
-</span>
-[查看规范](interrupts.md)
+**草案（DRAFT）** [查看规范](interrupts.md)
 
 对既有生命周期事件（event）的扩展，用于支持中断（interrupt）与分支（branching）。
 

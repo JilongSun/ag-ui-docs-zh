@@ -62,7 +62,10 @@
 | `<Warning>…</Warning>` | `> [!WARNING]` + 每行加 `> ` |
 | `<Tip>…</Tip>` | `> [!TIP]` + 每行加 `> ` |
 | `<CardGroup cols={n}>` 内的一组 `<Card>` | 一组列表项，每项 `- **[标题](链接)** — 描述` |
+| 内联 JSX 徽章（如带 `style={{…}}` 的 `<span>DRAFT</span>`） | 加粗标记 `**草案（DRAFT）**`，与其后的链接保持同一段 |
 | `{/* 注释 */}` | `<!-- 注释 -->` |
+
+译文是纯 Markdown，**任何 JSX 都渲染不出来**：`style={{…}}`、`className=`、`<span>`、`<div>` 一律改写成 Markdown 等价形式。`check-terms` 会拦截残留的 JSX。
 
 数量必须守恒：原文几处 `<Note>`，译文就有几处 `> [!NOTE]`；原文每个 `<Card>` 的 `href` 都要作为链接目标出现在译文里。
 

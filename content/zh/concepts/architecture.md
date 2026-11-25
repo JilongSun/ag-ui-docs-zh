@@ -102,7 +102,7 @@ AG-UI 提供标准 HTTP 客户端（client） `HttpAgent`，可用于连接任�
 
 - **HTTP SSE（Server-Sent Events）**
 
-  - 基于文本的流式传输（transport），兼容性广
+  - 基于文本的流式（streaming），兼容性广
   - 易于阅读与调试
 
 - **HTTP 二进制（binary）协议**
@@ -172,14 +172,14 @@ AG-UI 通过专门的事件（event）提供高效的状态（state）管理：
 - `STATE_DELTA`：使用 JSON Patch 格式（RFC 6902）的增量（delta）状态（state）变更
 - `MESSAGES_SNAPSHOT`：完整的对话历史
 
-这些事件（event）以最小的数据传输（transport）量实现高效的客户端（client）状态（state）管理。
+这些事件（event）以最小的数据传输量实现高效的客户端（client）状态（state）管理。
 
 ## 工具与交接（Handoff）
 
 AG-UI 通过标准化事件（event）支持 Agent 之间的交接以及工具使用：
 
 - 工具定义通过 `runAgent` 的参数传入
-- 工具调用（tool call）以 `TOOL_CALL_START` → `TOOL_CALL_ARGS` → `TOOL_CALL_END` 的事件（event）序列流式传输（transport）
+- 工具调用（tool call）以 `TOOL_CALL_START` → `TOOL_CALL_ARGS` → `TOOL_CALL_END` 的事件（event）序列流式发出（streamed）
 - Agent 可以交接给其他 Agent，并保持上下文的连续性
 
 ## 事件（event）

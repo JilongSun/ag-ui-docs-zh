@@ -188,7 +188,7 @@ interface ActivityMessage {
   （清单、步骤（step）、进行中的搜索等）。
 - **仅限前端（frontend）：** 从不转发给 Agent，因此无需过滤，也不会让 LLM 产生混淆。
 - **可定制：** 定义你自己的 `activityType` 和 `content`，并渲染与之匹配的 UI 组件。
-- **可流式传输（transport）：** 对于长时间运行（run）的操作，可以随时间持续更新。
+- **可流式（streamable）：** 对于长时间运行（run）的操作，可以随时间持续更新。
 - 通过把自定义事件（event）转换为可持久化的消息（message）对象，帮助持久化/恢复它们。
 
 ### 开发者消息（message）
@@ -288,7 +288,7 @@ interface MessagesSnapshotEvent {
 
 ### 流式消息（message）
 
-对于实时交互，新消息（message）可以在生成过程中进行流式传输（transport）：
+对于实时交互，新消息（message）可以边生成边流式发送（streamed）：
 
 1. **开始一条消息（message）**：表示正在创建一条新消息（message）
 
@@ -300,7 +300,7 @@ interface MessagesSnapshotEvent {
    }
    ```
 
-2. **流式传输（transport）内容**：内容块一就绪就发送
+2. **流式发送（stream）内容**：内容块一就绪就发送
 
    ```typescript
    interface TextMessageContentEvent {
@@ -380,7 +380,7 @@ interface ToolCall {
 
 ## 流式工具调用（tool call）
 
-与文本消息（text message）类似，工具调用（tool call）也可以流式传输（transport），以实时呈现 Agent 正在执行的操作：
+与文本消息（text message）类似，工具调用（tool call）也可以流式发出（streamed），以实时呈现 Agent 正在执行的操作：
 
 1. **开始一次工具调用（tool call）**：
 
@@ -393,7 +393,7 @@ interface ToolCall {
    }
    ```
 
-2. **流式传输（transport）参数**：
+2. **流式发送（stream）参数**：
 
    ```typescript
    interface ToolCallArgsEvent {
@@ -466,8 +466,8 @@ interface ToolCall {
 ## 结论
 
 AG-UI 中的消息（message）结构在保持厂商中立的同时，实现了复杂的对话式 AI 体验。通过标准化
-消息（message）的表示、同步与流式传输（transport）方式，AG-UI 为实现在人类与 Agent 之间的交互式通信
+消息（message）的表示、同步与流式发送（streamed）方式，AG-UI 为实现在人类与 Agent 之间的交互式通信
 提供了一致的方式，而无论底层 AI 服务是什么。
 
 该系统既支持简单的文本交换，也支持复杂的基于工具的工作流，同时兼顾实时响应性与
-高效的数据传输（transport）。
+高效的数据传输。

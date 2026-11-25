@@ -33,7 +33,7 @@ sequenceDiagram
 
 - **省略** —— 遗留/向后兼容。按正常完成处理。尚不了解中断（interrupt）的既有 AG-UI 客户端（client）仍会发出这种形态，新的读取方应当接受它。
 - `{ type: "success" }` —— 运行（run）正常完成。为向后兼容，可选的 `result` 仍留在事件（event）的根部。
-- `{ type: "interrupt", interrupts: [...] }` —— 运行（run）因等待用户输入而暂停。`interrupts` 是非空数组，它位于 outcome 内部，从而随需要它的变体一起传输（transport）。
+- `{ type: "interrupt", interrupts: [...] }` —— 运行（run）因等待用户输入而暂停。`interrupts` 是非空数组，它位于 outcome 内部，从而随需要它的变体一起传递。
 
 ```typescript
 type RunFinishedOutcome =

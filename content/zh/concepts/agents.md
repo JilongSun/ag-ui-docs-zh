@@ -210,7 +210,7 @@ agent.runAgent({
 工具通过一系列事件（event）被调用：
 
 1. `TOOL_CALL_START`：表示一次工具调用（tool call）的开始
-2. `TOOL_CALL_ARGS`：流式传输（transport）该工具调用（tool call）的参数
+2. `TOOL_CALL_ARGS`：流式发送（streams）该工具调用（tool call）的参数
 3. `TOOL_CALL_END`：标记该工具调用（tool call）的完成
 
 随后，前端（front-end）应用可以执行该工具并将结果返回给 Agent。这种双向流程可支持复杂的人在回路（human in the loop）

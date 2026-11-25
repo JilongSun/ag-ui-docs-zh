@@ -196,14 +196,14 @@ async def tool_node(self, state: ResearchState, config: RunnableConfig):
     return tool_state
 ```
 
-这些状态（state）更新通过 AG-UI 的状态（state）快照（snapshot）与增量（delta）机制传输（transport），从而在 Agent 与前端（frontend）之间形成无缝的共享上下文。
+这些状态（state）更新通过 AG-UI 的状态（state）快照（snapshot）与增量（delta）机制传输，从而在 Agent 与前端（frontend）之间形成无缝的共享上下文。
 
 ## 最佳实践
 
 在 AG-UI 中实现状态（state）管理时：
 
 1. **审慎使用快照（snapshot）**：只有在建立基线确有必要时，才应发送完整快照（snapshot）。
-2. **增量（delta）变更优先使用增量（delta）**：小幅状态（state）更新应使用增量（delta），以尽量减少数据传输（transport）。
+2. **增量（delta）变更优先使用增量（delta）**：小幅状态（state）更新应使用增量（delta），以尽量减少数据传输。
 3. **精心设计状态（state）结构**：设计状态（state）对象时要支持局部更新，并尽量减少补丁的复杂度。
 4. **处理状态（state）冲突**：实现用于解决 Agent 与前端（frontend）更新冲突的策略。
 5. **包含错误恢复**：提供在检测到不一致时重新同步状态（state）的机制。

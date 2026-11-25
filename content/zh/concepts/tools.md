@@ -98,7 +98,7 @@ agent.runAgent({
    }
    ```
 
-2. **ToolCallArgs**：在工具参数生成的过程中流式传输（transport）这些参数
+2. **ToolCallArgs**：在工具参数生成的过程中流式发送（streams）这些参数
 
    ```typescript
    {

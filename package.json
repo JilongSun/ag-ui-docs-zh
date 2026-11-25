@@ -6,6 +6,7 @@
     "fetch": "node scripts/fetch-upstream.mjs",
     "check": "node scripts/check-parity.mjs && node scripts/check-links.mjs && node scripts/check-terms.mjs && node scripts/check-coverage.mjs",
     "remap-anchors": "node scripts/remap-anchors.mjs",
-    "watch": "node scripts/check-upstream-changes.mjs"
+    "watch": "node scripts/check-upstream-changes.mjs",
+    "audit:terms": "node scripts/audit-terms.mjs"
   }
 }

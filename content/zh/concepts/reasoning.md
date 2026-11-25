@@ -41,7 +41,7 @@ interface ReasoningMessage {
 关键特性：
 
 - **与助手消息（message）分离**：推理（reasoning）与最终响应保持相互独立，避免污染对话历史
-- **可流式传输（transport）**：内容通过流式事件（event）到达
+- **可流式（streamable）**：内容通过流式事件（event）到达
 - **可选加密**：当存在 `encryptedValue` 时，它表示加密的思维链，由客户端（client）以不透明的方式存储并转发
 
 ## 推理（reasoning）事件（event）
@@ -438,7 +438,7 @@ yield { type: "REASONING_END", messageId: "reasoning-001" }
    `ReasoningEncryptedValue` 将加密内容附加到消息（message）或工具调用（tool call）上
 3. **提供用户反馈**：即使推理（reasoning）被加密，也应输出可见摘要，让用户知道 Agent 正在工作
 4. **优雅地处理缺失事件（event）**：客户端（client）应能容忍不完整的事件（event）流
-5. **考虑带宽**：对于非常长的推理（reasoning）链，可考虑只输出摘要以减少数据传输（transport）
+5. **考虑带宽**：对于非常长的推理（reasoning）链，可考虑只输出摘要以减少数据传输
 
 ## 相关文档
 

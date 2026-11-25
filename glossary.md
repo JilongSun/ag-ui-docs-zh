@@ -106,6 +106,8 @@
 | serialized | 已序列化（serialized） | |
 | JSON-serializable | 可 JSON 序列化（JSON-serializable） | |
 | serializer | 序列化器（serializer） | |
+| streaming | 流式（streaming） | 动词 `stream` / `streams` 译「流式发送（stream）」 |
+| streamable | 可流式（streamable） | |
 | compaction / compact | 压缩（compaction）/ 压缩（compact） | 按原文词形分别标注 |
 | compression | 压缩（compression） | 与 `compaction` 区分 |
 
@@ -135,6 +137,8 @@
 | --- | --- | --- |
 | transport | 传输（transport） | |
 | transport-agnostic | 传输无关（transport-agnostic） | |
+| transfer / transmission / transmitted | 传输 / 传递 | **不是术语，不加原文标注**；只有协议概念 transport 才写「传输（transport）」 |
+| stream / streamed / streaming | 流式发送 / 流式 / 流式 | **不是术语**；不要写成「流式传输」再标 (transport) |
 | binding | 绑定（binding） | |
 | SSE | SSE | 不译 |
 | HTTP POST | HTTP POST | 不译 |
@@ -172,6 +176,17 @@
 | MAY | 可以（MAY） |
 | REQUIRED | 必需（REQUIRED） |
 | OPTIONAL | 可选（OPTIONAL） |
+
+## 易混提醒
+
+中文会把多个英文词收敛成同一个词，标注时必须回到原文看**实际用的是哪个词**：
+
+| 中文 | 可能是 | 判断依据 |
+| --- | --- | --- |
+| 传输 | `transport`（协议概念）/ `transfer`、`transmission`（普通词语） | 原文讲 SSE、Protobuf 这类绑定 → `transport`，加标注；讲"数据传过去" → 普通词语，**不加标注** |
+| 流式 | `stream` 词族 | 标注用原文词形（`streamed` / `streaming` / `streamable`），**不要标成 transport** |
+
+`npm run audit:terms` 会校验这三组易混词，标注词未出现在对应原文小节时会报出来。
 
 ## 禁用译法
 

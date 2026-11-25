@@ -11,7 +11,7 @@ A2UI、MCP-UI 与 Open-JSON-UI 都是**生成式 UI（generative UI）规范。*
 
 | **规范** | **来源 / 维护者** | **用途** |
 | --- | --- | --- |
-| **A2UI** | Google | 一种声明式、对 LLM 友好的生成式 UI（generative UI）规范。基于 JSONL 且支持流式传输（transport），为平台无关的渲染而设计。 |
+| **A2UI** | Google | 一种声明式、对 LLM 友好的生成式 UI（generative UI）规范。基于 JSONL 且支持流式（streaming），为平台无关的渲染而设计。 |
 | **Open-JSON-UI** | OpenAI | 对 OpenAI 内部声明式生成式 UI（generative UI） schema 的开放标准化。 |
 | **MCP-UI** | Microsoft + Shopify | 一个完全开放的、基于 iframe 的生成式 UI（generative UI）标准，扩展 MCP 以支持面向用户的体验。 |
 

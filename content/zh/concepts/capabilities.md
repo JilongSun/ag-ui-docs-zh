@@ -92,7 +92,7 @@ interface IdentityCapabilities {
 }
 ```
 
-### Transport（传输（transport））
+### 传输（transport）
 
 声明 Agent 支持哪些传输（transport）机制。客户端（client）据此选择最佳的连接策略。只对 Agent 实际处理的传输（transport）把标志设为 `true`——对不支持的传输（transport），要么省略，要么设为 `false`。
 

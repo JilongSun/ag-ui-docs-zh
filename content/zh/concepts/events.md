@@ -204,7 +204,7 @@ sequenceDiagram
 
 ## 工具调用（tool call）事件（event）
 
-这些事件（event）表示 Agent 发起工具调用（tool call）的生命周期。工具调用（tool call）遵循与文本消息（text message）相似的流式模式。当 Agent 需要使用某个工具时，它发出 `ToolCallStart` 事件（event），随后是一个或多个 `ToolCallArgs` 事件（event）（流式传输（transport）传给工具的参数），最后以 `ToolCallEnd` 事件（event）结束。
+这些事件（event）表示 Agent 发起工具调用（tool call）的生命周期。工具调用（tool call）遵循与文本消息（text message）相似的流式模式。当 Agent 需要使用某个工具时，它发出 `ToolCallStart` 事件（event），随后是一个或多个 `ToolCallArgs` 事件（event）（流式发送（streaming）传给工具的参数），最后以 `ToolCallEnd` 事件（event）结束。
 
 这种流式方式让前端（frontend）可以实时展示工具执行过程，使 Agent 的动作透明化，并就"正在调用什么工具、传了什么参数"提供即时反馈。
 
@@ -245,7 +245,7 @@ sequenceDiagram
 
 表示工具调用（tool call）的一段参数数据。
 
-`ToolCallArgs` 事件（event）在工具参数可用时投递其增量（delta）部分。每个事件（event）的 `delta` 属性包含一段参数数据。这些 delta 通常是 JSON 片段，合并后构成该工具的完整参数对象。对于构造完整参数可能需要时间的复杂工具调用（tool call），流式传输（transport）参数尤其有价值。前端（frontend）可以向用户逐步揭示这些参数，让人了解到底传了哪些参数给工具。
+`ToolCallArgs` 事件（event）在工具参数可用时投递其增量（delta）部分。每个事件（event）的 `delta` 属性包含一段参数数据。这些 delta 通常是 JSON 片段，合并后构成该工具的完整参数对象。对于构造完整参数可能需要时间的复杂工具调用（tool call），流式发送（streaming）参数尤其有价值。前端（frontend）可以向用户逐步揭示这些参数，让人了解到底传了哪些参数给工具。
 
 | 属性 | 说明 |
 | ------------ | ----------------------------------- |
@@ -256,7 +256,7 @@ sequenceDiagram
 
 标志一次工具调用（tool call）的结束。
 
-`ToolCallEnd` 事件（event）标记一次工具调用（tool call）的完成。收到该事件（event）后，前端（frontend）便知道所有参数都已传输（transport）完毕，工具执行正在进行或已完成。这使 UI 能够完成工具调用（tool call）的展示，并为可能的结果做准备。在工具执行结果另行返回的系统中，该事件（event）表示 Agent 已结束对工具及其参数的说明，正在等待或已收到结果。
+`ToolCallEnd` 事件（event）标记一次工具调用（tool call）的完成。收到该事件（event）后，前端（frontend）便知道所有参数都已传输完毕，工具执行正在进行或已完成。这使 UI 能够完成工具调用（tool call）的展示，并为可能的结果做准备。在工具执行结果另行返回的系统中，该事件（event）表示 Agent 已结束对工具及其参数的说明，正在等待或已收到结果。
 
 | 属性 | 说明 |
 | ------------ | ----------------------------------- |
@@ -296,7 +296,7 @@ sequenceDiagram
 
 这些事件（event）用于管理并同步 Agent 的状态（state）与前端（frontend）。协议中的状态（state）管理遵循高效的快照（snapshot）-增量（delta）（snapshot-delta）模式：完整状态（state）快照（snapshot）在初始或偶尔发送，而持续的变化则使用增量（delta）更新（delta）。
 
-这种方式同时兼顾完整性与效率：快照（snapshot）确保前端（frontend）拥有完整的状态（state）上下文，而 delta 则把频繁更新所需的数据传输（transport）降到最低。二者结合，使前端（frontend）能够在不做多余传输（transport）的前提下，维持对 Agent 状态（state）的准确表示。
+这种方式同时兼顾完整性与效率：快照（snapshot）确保前端（frontend）拥有完整的状态（state）上下文，而 delta 则把频繁更新所需的数据传输降到最低。二者结合，使前端（frontend）能够在不做多余传输的前提下，维持对 Agent 状态（state）的准确表示。
 
 ```mermaid
 sequenceDiagram

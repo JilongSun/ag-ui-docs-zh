@@ -31,7 +31,8 @@
    同一句内重复出现同样标注，不省略。
 3. 注释里写「不译」的词（`agent`、`schema`、`JSON Patch`、`SSE`、`Protobuf` 等）保持英文原样，不加中文标注。
 4. 协议标识符**永不翻译**：事件名（`RUN_STARTED`）、字段名（`subagentRunId`）、类型名（`TextMessageContentEvent`）、JSON 键、枚举值、包名、URL。
-5. RFC 2119 / BCP 14 关键词按下表处理，并且每处都标注原文：
+5. **标注的英文词必须是该处原文真实用到的词。** 中文会把多个英文词收敛成一个中文词，常见陷阱见 [glossary.md](./glossary.md) 的「易混提醒」：`transport`（传输层，协议概念）与 `transfer`/`transmission`（普通的"数据传输"）都译作「传输」，但只有前者加标注；`stream` 词族译作「流式」，不要写成「流式传输」再标 `(transport)`。
+6. RFC 2119 / BCP 14 关键词按下表处理，并且每处都标注原文：
 
    | 原文 | 译文 |
    | --- | --- |
@@ -102,9 +103,10 @@ npm run remap-anchors            # 把英文锚点映射到译文标题
 node scripts/check-links.mjs     # 链接与锚点
 node scripts/check-terms.mjs     # 术语与禁用译法
 node scripts/check-coverage.mjs   # 上游每个文件都有译文
+npm run audit:terms              # 易混词标注是否与原文一致（非阻断，人工确认）
 ```
 
-四项全绿才能提交。
+前四项全绿才能提交；`audit:terms` 不是门禁，但它报出来的每一条都要人工看一眼——它专门抓「结构与代码都对、但术语标注指向了另一个英文词」这类错。
 
 ## 九、发布节奏
 

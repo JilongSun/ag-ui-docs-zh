@@ -1,5 +1,5 @@
 /**
- * 审计内联标注「中文（原文）」是否合规。只报告，不阻断。
+ * 审计内联标注「中文（原文）」是否合规。有问题时以非零状态退出，属于门禁。
  *
  * 三条规则：
  *  1. 英文部分必须来自受控词表（scripts/annotations.mjs，与 glossary.md 的白名单同源）。
@@ -141,6 +141,7 @@ if (problems.length) {
   console.log(`audit-terms: ${problems.length} 处问题（共检查 ${checked} 处标注）\n`);
   for (const problem of problems) console.log(`  - ${problem}`);
   console.log("\n标注只能从当前原文里取词。若原文用的是另一个词，改用那个词或不加标注。");
+  process.exit(1);
 } else {
   console.log(`audit-terms: ${checked} 处标注合规（受控词表、每页一次、原文可证）。`);
 }

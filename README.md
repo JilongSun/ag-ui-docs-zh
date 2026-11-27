@@ -45,7 +45,7 @@
 
 ```bash
 node scripts/fetch-upstream.mjs   # 按 upstream.lock.json 拉取并校验上游原文
-npm run check                     # 结构对齐 + 链接锚点 + 术语
+npm run check                     # 结构对齐 + 链接锚点 + 术语 + 标注审计
 ```
 
 CI 在每次 push 与 PR 上跑同一组检查，并要求上游哈希与锁文件一致——上游一改，CI 就会提示需要重新评估译文。

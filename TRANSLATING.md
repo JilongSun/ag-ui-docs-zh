@@ -111,10 +111,10 @@ npm run remap-anchors            # 把英文锚点映射到译文标题
 node scripts/check-links.mjs     # 链接与锚点
 node scripts/check-terms.mjs     # 术语与禁用译法
 node scripts/check-coverage.mjs   # 上游每个文件都有译文
-npm run audit:terms              # 易混词标注是否与原文一致（非阻断，人工确认）
+node scripts/audit-terms.mjs     # 标注是否出自白名单、每页一次、原文可证
 ```
 
-前四项全绿才能提交；`audit:terms` 不是门禁，但它报出来的每一条都要人工看一眼——它专门抓「结构与代码都对、但术语标注指向了另一个英文词」这类错。
+五项全绿才能提交（`npm run check` 一次跑完）。最后一项专抓「结构与代码都对、但术语标注指向了另一个英文词」这类错——它拦下来时，按提示改标注或去掉标注，不要绕过。
 
 ## 九、发布节奏
 

@@ -1435,7 +1435,7 @@ Agent 可以作为输出产生的模态。客户端（client）用它来预期 A
 
 ## 混入（mixin）
 
-共享的字段（field）集合，会被展平进每一个组合（compose）它们的定义。它们在 schema 中以具名定义的形式存在，好让文档只写一次；线上格式（wire format）中从不存在「只是一个混入（mixin）」的对象。
+共享的字段（field）集合，会被展平进每一个组合（compose）它们的定义。它们在 schema 中以具名定义的形式存在，好让文档只写一次；线上（wire）中从不存在「只是一个混入（mixin）」的对象。
 
 ### `Attributable`
 

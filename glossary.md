@@ -48,7 +48,9 @@
 | attribution | 归属（attribution） | |
 | ownership | 所有权（ownership） | |
 | idempotent | 幂等（idempotent） | |
-| wire format | 线上格式（wire format） | |
+| wire | 线上（wire） | 上游单说 `wire`（如 `vary by wire`、`on the wire`）时用这个，**不要**写成「线上格式（wire format）」 |
+| wire schema | 线上 schema（wire schema） | 上游的 `the wire schema` |
+| wire format | 线上格式（wire format） | **只在上游字面写 `wire format` 时才用** |
 | in-band / out-of-band | 带内（in-band）/ 带外（out-of-band） | |
 | framing | 分帧（framing） | |
 | truncation | 截断（truncation） | |
@@ -186,7 +188,7 @@
 | 传输 | `transport`（协议概念）/ `transfer`、`transmission`（普通词语） | 原文讲 SSE、Protobuf 这类绑定 → `transport`，加标注；讲"数据传过去" → 普通词语，**不加标注** |
 | 流式 | `stream` 词族 | 标注用原文词形（`streamed` / `streaming` / `streamable`），**不要标成 transport** |
 
-`npm run audit:terms` 会校验这三组易混词，标注词未出现在对应原文小节时会报出来。
+`npm run audit:terms` 会校验这些易混词；另外它还会检查**多词标注里的每个词是否都出现在原文小节**——「线上格式（wire format）」落在只写了 `wire` 的地方，就是靠这条报出来的。
 
 ## 禁用译法
 

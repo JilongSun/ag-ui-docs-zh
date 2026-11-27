@@ -50,7 +50,7 @@ JSON Schema 说明一个事件（event）长什么样。它无法说明事件（
 
 ## 安全与信任（Trust & Safety）
 
-AG-UI 把模型输出变成应用（application）实际执行的事情：工具调用（tool call）变成动作，状态（state）事件（event）变成写入，流式内容变成用户读到的东西。随之而来的是协议（protocol）无法在线上格式（wire format）层面强制、但实现者必须处理的义务。
+AG-UI 把模型输出变成应用（application）实际执行的事情：工具调用（tool call）变成动作，状态（state）事件（event）变成写入，流式内容变成用户读到的东西。随之而来的是协议（protocol）无法在线上（wire）强制、但实现者必须处理的义务。
 
 ### 关键原则
 

@@ -25,7 +25,21 @@ const FAMILY = {
   transport: ["transport", "transports"],
   stream: ["stream", "streams", "streaming", "streamed", "streamable"],
   transfer: ["transfer", "transfers", "transferred", "transmission", "transmitted", "transmit"],
+  wire: ["wire", "wires"],
 };
+
+/** 单词的常见词形，用于多词标注逐词核对。 */
+function wordForms(word) {
+  const forms = [word, `${word}s`];
+  if (word.endsWith("y")) forms.push(`${word.slice(0, -1)}ies`);
+  if (/(s|x|z|ch|sh)$/.test(word)) forms.push(`${word}es`);
+  return forms;
+}
+
+const wordRegex = (word) =>
+  new RegExp(`(?<![a-z])(?:${wordForms(word).map(escapeRegex).join("|")})(?![a-z])`, "i");
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const familyOf = (term) =>
   Object.entries(FAMILY).find(([, forms]) => forms.includes(term))?.[0] ?? null;
@@ -34,8 +48,10 @@ const familyRegex = (family) =>
   new RegExp(`(?<![a-z])(?:${FAMILY[family].join("|")})(?![a-z])`, "i");
 
 function sections(markdown) {
-  const offset = markdown.startsWith("---\n") ? markdown.indexOf("\n---\n") + 5 : 0;
-  const lines = markdown.slice(offset).split("\n");
+  // 正文第一行的文件行号：frontmatter 行数 + 1
+  const cut = markdown.startsWith("---\n") ? markdown.indexOf("\n---\n") + 5 : 0;
+  const baseLine = markdown.slice(0, cut).split("\n").length;
+  const lines = markdown.slice(cut).split("\n");
   const out = [{ heading: "(开头)", text: [], annotations: [] }];
   let fence = false;
   lines.forEach((line, index) => {
@@ -53,8 +69,7 @@ function sections(markdown) {
     current.text.push(line);
     for (const match of line.matchAll(/（([a-z][a-zA-Z .\-']*)）/g)) {
       const term = match[1].trim().toLowerCase();
-      const family = familyOf(term);
-      if (family) current.annotations.push({ term, family, line: index + offset + 1 });
+      current.annotations.push({ term, family: familyOf(term), line: baseLine + index });
     }
   });
   for (const section of out) section.plain = section.text.join(" ");
@@ -90,10 +105,20 @@ for (const file of walk(CONTENT_DIR)) {
   translated.forEach((section, index) => {
     const source = original[index].plain;
     for (const { term, family, line } of section.annotations) {
+      const heading = original[index].heading;
+      if (family) {
+        checked += 1;
+        if (!familyRegex(family).test(source)) {
+          problems.push(`${rel}:${line} 「${term}」未在原文小节「${heading}」出现`);
+        }
+        continue;
+      }
+      if (!term.includes(" ")) continue;
       checked += 1;
-      if (!familyRegex(family).test(source)) {
+      const missing = term.split(/[\s-]+/).filter(Boolean).filter((word) => !wordRegex(word).test(source));
+      if (missing.length) {
         problems.push(
-          `${rel}:${line} 「${term}」未在原文小节「${original[index].heading}」出现`,
+          `${rel}:${line} 「${term}」的 ${missing.map((w) => `\`${w}\``).join("、")} 未在原文小节「${heading}」出现`,
         );
       }
     }
@@ -103,7 +128,7 @@ for (const file of walk(CONTENT_DIR)) {
 if (problems.length) {
   console.log(`audit-terms: ${problems.length} 处可疑标注（共比对 ${checked} 处）\n`);
   for (const problem of problems) console.log(`  - ${problem}`);
-  console.log("\n请逐条对照原文：确实是 protocol 概念就保留，指的是普通传输/流式就改回不带标注的写法。");
+  console.log("\n请逐条对照原文：标注的英文词必须真的出现在对应小节里，否则改用原文的实际用词，或去掉标注。");
 } else {
-  console.log(`audit-terms: ${checked} 处易混词标注均与原文一致。`);
+  console.log(`audit-terms: ${checked} 处术语标注均与原文一致。`);
 }

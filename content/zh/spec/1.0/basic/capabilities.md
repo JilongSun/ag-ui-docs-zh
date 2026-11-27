@@ -43,7 +43,7 @@ description: "Agent 在运行（run）前对自身的声明（declaration）、�
 
 `tools.items` 列出*Agent* 提供的工具——它自己的函数、搜索、代码执行——与 `RunAgentInput.tools` 不同，后者携带的是*应用（application）*为某一次运行（run）提供的工具。二者从不合并（merge）：Agent 自己的工具不是供应用（application）执行的，而应用（application）的工具也不在这里声明。
 
-`multiAgent.subagents` 为选择界面（selection interface）命名 Agent 可以调用的子 Agent（subagent）。它是一份定义（definition）清单，而不是调用（invocation）清单：消费者（consumer）在线上格式（wire format）中遇到的标识符（identifier）是 `subagentRunId` 取值，每次调用（invocation）一个，在运行（run）时铸造——[子 Agent（subagent）](../events/subagents.md)约束它们，本页没有任何内容能预测它们。
+`multiAgent.subagents` 为选择界面（selection interface）命名 Agent 可以调用的子 Agent（subagent）。它是一份定义（definition）清单，而不是调用（invocation）清单：消费者（consumer）在线上（wire）遇到的标识符（identifier）是 `subagentRunId` 取值，每次调用（invocation）一个，在运行（run）时铸造——[子 Agent（subagent）](../events/subagents.md)约束它们，本页没有任何内容能预测它们。
 
 `transport` 的两个标志（flag）同样描述了本版本（version）未定义的机制。`transport.resumable` 说的是按序号（sequence number）恢复（resume）一条被中断的流（stream），`transport.pushNotifications` 说的是运行（run）结束之后的投递；[HTTP 绑定（binding）](transports/index.md)既不携带序号（sequence number），也不恢复（resume）流（stream），更不定义运行（run）之后的通道。Agent 可以（MAY）为自己的一种传输（transport）声明它们；消费者（consumer）不得（MUST NOT）期望任何一个标准绑定（binding）兑现它们。
 

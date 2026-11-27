@@ -31,7 +31,13 @@
    同一句内重复出现同样标注，不省略。
 3. 注释里写「不译」的词（`agent`、`schema`、`JSON Patch`、`SSE`、`Protobuf` 等）保持英文原样，不加中文标注。
 4. 协议标识符**永不翻译**：事件名（`RUN_STARTED`）、字段名（`subagentRunId`）、类型名（`TextMessageContentEvent`）、JSON 键、枚举值、包名、URL。
-5. **标注的英文词必须是该处原文真实用到的词。** 中文会把多个英文词收敛成一个中文词，常见陷阱见 [glossary.md](./glossary.md) 的「易混提醒」：`transport`（传输层，协议概念）与 `transfer`/`transmission`（普通的"数据传输"）都译作「传输」，但只有前者加标注；`stream` 词族译作「流式」，不要写成「流式传输」再标 `(transport)`。
+5. **标注的英文词必须是该处原文真实用到的词，且不能多写。** 中文会把多个英文词收敛成一个中文词，常见陷阱见 [glossary.md](./glossary.md) 的「易混提醒」：
+
+   - `transport`（传输层，协议概念）与 `transfer`/`transmission`（普通的"数据传输"）都译作「传输」，但只有前者加标注；
+   - `stream` 词族译作「流式」，不要写成「流式传输」再标 `(transport)`；
+   - 原文只说 `wire` 就不要标成 `(wire format)`，`wire schema` 也不能简写成 `wire`。
+
+   判断依据是**原文那一段实际写了什么**，不是术语表里最接近的词条。
 6. RFC 2119 / BCP 14 关键词按下表处理，并且每处都标注原文：
 
    | 原文 | 译文 |

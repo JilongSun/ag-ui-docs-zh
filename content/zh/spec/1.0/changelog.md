@@ -21,11 +21,11 @@ description: "1.0 相对于 0.x 系列的改动 — 1.0"
 
 7. **分块（chunked）形式有规则。** 首个分块必须（MUST）携带开启所需的内容（文本消息（text message）的 `messageId` 与 role 语义，工具调用（tool call）的 `toolCallId` 与 `toolCallName`）；后续分块可以（MAY）省略它们；续块若重复某个开启字段（field）却给出冲突的值，则是致命的（[流式模式](basic/patterns/streaming.md)）。
 
-8. **二进制（binary）线上格式（wire format）。** [HTTP + Protobuf 绑定（binding）](basic/transports/http-protobuf.md)已作出规定 —— 按媒体类型协商（negotiation）、4 字节长度前缀分帧（framing）、由同一 schema 生成，并以共享的字节语料固定跨实现一致性。
+8. **二进制（binary）线上（wire）。** [HTTP + Protobuf 绑定（binding）](basic/transports/http-protobuf.md)已作出规定 —— 按媒体类型协商（negotiation）、4 字节长度前缀分帧（framing）、由同一 schema 生成，并以共享的字节语料固定跨实现一致性。
 
 9. **能力（capability）进入了 schema。** SDK 曾以三份手写副本携带的 `AgentCapabilities` 声明，现在只在 schema 中定义一次，并为每个 SDK 生成。其语义也已陈述：省略意味着未声明，声明是资料性的（informative），以流（stream）为准，而获取方式刻意留给实现（implementation）（[能力（capability）](basic/capabilities.md)）。子 Agent（subagent）列表拼作 `subagents`，与 `subagentRunId` 一致；较早的 `subAgents` 键不会被读取。
 
-10. **工具结果（tool result）携带内容片段（content part）。** `TOOL_CALL_RESULT.content` 以及它所铸造的工具消息（message）接受字符串，或接受与用户消息（message）所携带内容相同的有序片段（content part）列表，因此工具可以返回文档、图像或搜索结果，而无需把它编码进字符串（[工具调用（tool call）](events/tool-calls.md#结果内容result-content)）。为此重命名了这些片段 —— `InputContent` → `ContentPart`、`TextInputContent` → `TextPart`、`ImageInputContent` → `ImagePart` 等等，`InputContentSource` → `PartSource`，其中包含 `DataSource` 与 `UrlSource` —— 因为按方向命名的片段一旦反向传输就名不副实。线上格式（wire format）未变：每个 `type` 值都相同，只有定义名与锚点（anchor）移动了，SDK 则把旧名称保留为别名。每个片段都新增了可选的 `id`，文本片段（text part）也获得了媒体片段已有的 `metadata`。`ReasoningPart`、`ToolCallPart` 与 `AssistantPart` 保留给助手消息（message）同样携带片段的那次发布（release）。
+10. **工具结果（tool result）携带内容片段（content part）。** `TOOL_CALL_RESULT.content` 以及它所铸造的工具消息（message）接受字符串，或接受与用户消息（message）所携带内容相同的有序片段（content part）列表，因此工具可以返回文档、图像或搜索结果，而无需把它编码进字符串（[工具调用（tool call）](events/tool-calls.md#结果内容result-content)）。为此重命名了这些片段 —— `InputContent` → `ContentPart`、`TextInputContent` → `TextPart`、`ImageInputContent` → `ImagePart` 等等，`InputContentSource` → `PartSource`，其中包含 `DataSource` 与 `UrlSource` —— 因为按方向命名的片段一旦反向传输就名不副实。线上（wire）未变：每个 `type` 值都相同，只有定义名与锚点（anchor）移动了，SDK 则把旧名称保留为别名。每个片段都新增了可选的 `id`，文本片段（text part）也获得了媒体片段已有的 `metadata`。`ReasoningPart`、`ToolCallPart` 与 `AssistantPart` 保留给助手消息（message）同样携带片段的那次发布（release）。
 
 ## 次要变更
 

@@ -118,7 +118,7 @@ assistantMessage.toolCalls[0].metadata
 
 二进制（binary） protobuf 格式将其承载为 `google.protobuf.Struct`，其值类型拥有真正的 null 情况，因此某个键下的 `null` 会被保留而不会被近似处理，不存在的对象也依然能与空对象区分开。那里有两点注意事项，且都不是元数据（metadata）特有的：
 
-- **并非每个事件（event）都有 protobuf 表示。** 该线格式（wire format）只覆盖事件（event）类型的一个子集——工具结果（tool result）、活动（activity）、推理（reasoning）以及已废弃的 thinking 事件（event）都没有对应的 protobuf 消息（message），因此它们根本无法跨该传输（transport），无论是否带元数据（metadata）。.NET 编码器会直接拒绝它们；TypeScript 编码器会产出一个空载荷，随后解码时被拒绝。无论哪种方式，事件（event）都不会到达，所以不要依赖二进制（binary）传输（transport）来承载这些事件（event）。
+- **并非每个事件（event）都有 protobuf 表示。** 线上（wire）只覆盖事件（event）类型的一个子集——工具结果（tool result）、活动（activity）、推理（reasoning）以及已废弃的 thinking 事件（event）都没有对应的 protobuf 消息（message），因此它们根本无法跨该传输（transport），无论是否带元数据（metadata）。.NET 编码器会直接拒绝它们；TypeScript 编码器会产出一个空载荷，随后解码时被拒绝。无论哪种方式，事件（event）都不会到达，所以不要依赖二进制（binary）传输（transport）来承载这些事件（event）。
 - **数字是 IEEE-754 double。** `google.protobuf.Value` 把每个数字都建模为 double，因此超出 2^53 的整数在往返时会丢失精度。这是该格式的属性，对 `state` 以及所有其他动态载荷同样适用。
 
 不同编码器之间的输出不保证逐字节相同：`Struct` 是 `map<string, Value>`，而 protobuf 的 map 条目顺序不是规范化的。可以保证的是，两侧都会解码为相同的值。在实践中，TypeScript 与 .NET 编码器对跨语言测试套件中的每个夹具（fixture）确实产出相同的字节，这一点在那里有断言，但不要依赖它。

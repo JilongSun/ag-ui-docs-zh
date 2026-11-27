@@ -68,4 +68,4 @@ sequenceDiagram
 
 4. **中间件（middleware）先于强制执行运行。** 翻译在任何东西被剥离（strip）之前获得机会，因此协议（protocol）可以演进而不让任何一方被困住：昨天的形状在边界（boundary）处被翻译，明天的形状则一路传递到认识它们的人手里。
 
-5. **传输（transport）即绑定（binding）。** 语义绝不因线上格式（wire format）而变。同样的事件（event），同样的规则，无论被分帧（framing）为 SSE 文本还是 protobuf 帧 —— 跨实现一致性由共享的字节语料固定。
+5. **传输（transport）即绑定（binding）。** 语义绝不随线上（wire）而变。同样的事件（event），同样的规则，无论被分帧（framing）为 SSE 文本还是 protobuf 帧 —— 跨实现一致性由共享的字节语料固定。

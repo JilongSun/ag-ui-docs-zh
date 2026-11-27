@@ -12,7 +12,7 @@ description: "运行（run）如何向外部索要东西，以及下一个运行
 - 生产者不得（MUST NOT）把被中断的运行报告为成功：中断结果是结束一次停下来*询问*的运行的唯一符合一致性（conformance）的方式 —— 生产者在其中指明自己在等待什么，并由恢复（resume）条目作答。因调用[前端工具](../../events/tool-calls.md#前端工具)而停止的运行是另一条普通路径：它以成功结束，在成功结果的 `pendingToolCallIds` 中指明未作答的调用（tool call），答案则搭乘下一次输入的 messages。因被*要求*而停止的运行两者都不是：它以[已取消结果](../../events/lifecycle.md#已取消的运行)结束，且不索要任何东西。
 - 每个中断（interrupt）的 `id` 必须（MUST）在运行内唯一；恢复条目以此 id 作答。
 - 中断的 `reason` 是开放字符串 —— 协议并不试图对 Agent 可能需要输入的每一种原因分类。`message` 是给作答者的人类可读提示；`toolCallId` 指明某次批准所涉及的工具调用；`responseSchema` 描述答案的预期形状，以不透明方式携带，以便消费者为它构建表单。
-- 在子 Agent（subagent）内部引发的中断可以（MAY）携带该子 Agent的 `subagentRunId`；[子 Agent规则](../../events/subagents.md)管辖归属以及随之而来的挂起结果。
+- 在子 Agent（subagent）内部引发的中断可以（MAY）携带该子 Agent 的 `subagentRunId`；[子 Agent 规则](../../events/subagents.md)管辖归属以及随之而来的挂起结果。
 
 被中断的运行是一个已关闭的运行。[运行生命周期](../../events/lifecycle.md)关于已关闭运行的一切规定都适用 —— 包括它所允许的那一次迟到到达，即报告在关闭之后才浮现的失败的 `RUN_ERROR` —— 而继续意味着一个新运行。
 

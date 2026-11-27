@@ -37,7 +37,7 @@ description: "Agent 在运行（run）前对自身的声明、一项声明所附
 
 有些字段值得在 schema 中的描述之外再作说明。
 
-`output.structuredOutput` 声明 Agent 能让自己的答案符合某个 schema，但本版本的协议既没有供消费者提供 schema 的字段，也没有把输出标识为结构化的那个事件。该声明告诉应用Agent 具备这项能力；schema 如何到达 Agent、塑形后的答案如何返回，都属于集成特定的实现细节，消费者不得（MUST NOT）期望任何标准事件携带其中任何一项。
+`output.structuredOutput` 声明 Agent 能让自己的答案符合某个 schema，但本版本的协议既没有供消费者提供 schema 的字段，也没有把输出标识为结构化的那个事件。该声明告诉应用 Agent 具备这项能力；schema 如何到达 Agent、塑形后的答案如何返回，都属于集成特定的实现细节，消费者不得（MUST NOT）期望任何标准事件携带其中任何一项。
 
 `multimodal.output` 声明 Agent *能产出*什么，但本版本的协议没有定义任何图像或音频输出：助手消息的内容与 `TEXT_MESSAGE_CONTENT` 增量都是文本。该声明是给应用看的——应用可能通过集成特定通道收到这类输出——本规范不规定它如何传输。消费者不得（MUST NOT）期望某个标准事件携带它。
 

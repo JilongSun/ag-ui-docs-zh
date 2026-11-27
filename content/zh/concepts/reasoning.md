@@ -46,7 +46,7 @@ interface ReasoningMessage {
 
 ## 推理（reasoning）事件（event）
 
-推理事件负责管理推理消息的生命周期。完整的事件参考请参见[事件](events.md#推理reasoning事件event)。
+推理事件负责管理推理消息的生命周期。完整的事件参考请参见[事件](events.md#推理 reasoning 事件 event)。
 
 ### 事件（event）流
 
@@ -442,6 +442,6 @@ yield { type: "REASONING_END", messageId: "reasoning-001" }
 
 ## 相关文档
 
-- [事件](events.md#推理reasoning事件event) - 完整的事件类型参考
-- [消息](messages.md#推理reasoning消息message) - 消息类型文档
+- [事件](events.md#推理 reasoning 事件 event) - 完整的事件类型参考
+- [消息](messages.md#推理 reasoning 消息 message) - 消息类型文档
 - [序列化](serialization.md) - 状态连续性与血缘

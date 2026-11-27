@@ -3,7 +3,7 @@ title: "关键变更"
 description: "1.0 相对于 0.x 系列的改动 — 1.0"
 ---
 
-本页列出 1.0 相对于协议0.x 系列所做的行为变更，面向熟悉 0.x、只想要差异而不想要整份文档的审阅者。它是资料性的：链接到的页面才是规范。
+本页列出 1.0 相对于协议 0.x 系列所做的行为变更，面向熟悉 0.x、只想要差异而不想要整份文档的审阅者。它是资料性的：链接到的页面才是规范。
 
 ## 重大变更
 
@@ -23,7 +23,7 @@ description: "1.0 相对于 0.x 系列的改动 — 1.0"
 
 8. **二进制线上（wire）。** [HTTP + Protobuf 绑定（binding）](basic/transports/http-protobuf.md)已作出规定 —— 按媒体类型协商、4 字节长度前缀分帧、由同一 schema 生成，并以共享的字节语料固定跨实现一致性。
 
-9. **能力（capability）进入了 schema。** SDK 曾以三份手写副本携带的 `AgentCapabilities` 声明，现在只在 schema 中定义一次，并为每个 SDK 生成。其语义也已陈述：省略意味着未声明，声明是资料性的，以流为准，而获取方式刻意留给实现（[能力](basic/capabilities.md)）。子 Agent列表拼作 `subagents`，与 `subagentRunId` 一致；较早的 `subAgents` 键不会被读取。
+9. **能力（capability）进入了 schema。** SDK 曾以三份手写副本携带的 `AgentCapabilities` 声明，现在只在 schema 中定义一次，并为每个 SDK 生成。其语义也已陈述：省略意味着未声明，声明是资料性的，以流为准，而获取方式刻意留给实现（[能力](basic/capabilities.md)）。子 Agent 列表拼作 `subagents`，与 `subagentRunId` 一致；较早的 `subAgents` 键不会被读取。
 
 10. **工具结果（tool result）携带内容片段。** `TOOL_CALL_RESULT.content` 以及它所铸造的工具消息接受字符串，或接受与用户消息所携带内容相同的有序片段列表，因此工具可以返回文档、图像或搜索结果，而无需把它编码进字符串（[工具调用](events/tool-calls.md#结果内容)）。为此重命名了这些片段 —— `InputContent` → `ContentPart`、`TextInputContent` → `TextPart`、`ImageInputContent` → `ImagePart` 等等，`InputContentSource` → `PartSource`，其中包含 `DataSource` 与 `UrlSource` —— 因为按方向命名的片段一旦反向传输就名不副实。线上未变：每个 `type` 值都相同，只有定义名与锚点移动了，SDK 则把旧名称保留为别名。每个片段都新增了可选的 `id`，文本片段也获得了媒体片段已有的 `metadata`。`ReasoningPart`、`ToolCallPart` 与 `AssistantPart` 保留给助手消息同样携带片段的那次发布。
 
@@ -32,7 +32,7 @@ description: "1.0 相对于 0.x 系列的改动 — 1.0"
 1. 运行输入上的 `tools` 与 `context` 是可选（optional）的：缺省与空值含义相同（[运行输入](basic/run-input.md)）。
 2. 元数据（metadata）合并语义是规范性的：逐键判定，最后写入者胜出，不递归，按事件族设定合并目标；`ag-ui` 键为保留键（[元数据](basic/metadata.md)）。
 3. 缺省就是缺省：可选字段被省略，绝不写成 `null`（[事件模型](basic/index.md#缺席即缺席)）。
-4. `RUN_FINISHED` 与 `RUN_ERROR` 可以（MAY）携带按提供商划分的令牌用量，采用同一套记账规则：输入与输出计数是总量，缓存与推理令牌是其中的一部分，缓存读取与缓存写入分别报告，用量遵循运行边界 —— 子 Agent的调用计入，子运行与恢复运行的调用不计入（[运行与步骤](events/lifecycle.md#token-用量)）。
+4. `RUN_FINISHED` 与 `RUN_ERROR` 可以（MAY）携带按提供商划分的令牌用量，采用同一套记账规则：输入与输出计数是总量，缓存与推理令牌是其中的一部分，缓存读取与缓存写入分别报告，用量遵循运行边界 —— 子 Agent 的调用计入，子运行与恢复运行的调用不计入（[运行与步骤](events/lifecycle.md#token-用量)）。
 5. 因前端工具调用而停止的运行以成功结束，绝不作为中断结束，且成功结果可以（MAY）在 `pendingToolCallIds` 中指明它未作答的调用（[工具调用](events/tool-calls.md#前端工具)）。
 6. 输入消息可以（MAY）携带多模态内容片段（文本、图像、音频、视频、文档），以 URL 形式、以内联数据形式，或以提供商文件句柄形式 —— 即 1.0 新增的 `file` 来源，用于已上传到模型提供商的字节（[运行输入](basic/run-input.md#提供方文件句柄)）。
 7. `TOOL_CALL_RESULT` 本身就是一条消息，不会重新打开它所回答的那次调用（[工具调用](events/tool-calls.md)）。

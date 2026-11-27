@@ -32,7 +32,7 @@ description: "万物之上的开放通道：它携带什么、如何合并，以
 | `TOOL_CALL_START` / `ARGS` / `END` | **工具调用本身**——而不是拥有它的那条助手消息 |
 | `TOOL_CALL_RESULT` | 它创建的工具消息 |
 | `ACTIVITY_SNAPSHOT` / `ACTIVITY_DELTA` | 活动消息——累积的元数据能在替换性快照（snapshot）中存活（[活动（activity）](../events/activity.md)） |
-| chunk（`*_CHUNK`） | 其合成事件所合并进去的对象（[chunk 元数据](patterns/streaming.md#分块元数据metadata)） |
+| chunk（`*_CHUNK`） | 其合成事件所合并进去的对象（[chunk 元数据](patterns/streaming.md#分块元数据 metadata)） |
 | 其他一切（`RUN_*`、`STEP_*`、快照、`RAW`、`CUSTOM`、……） | 无处可落——见下文 |
 
 > [!NOTE]

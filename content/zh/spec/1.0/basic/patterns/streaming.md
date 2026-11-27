@@ -78,9 +78,9 @@ sequenceDiagram
 
 - 当某个分块在同一泳道内开启另一个项时；
 - 当消息、工具调用、步骤、状态（state）、自定义或推理事件到达该项的泳道时 —— 有四个例外不参与组装、也不关闭任何东西：`RAW`、`ACTIVITY_SNAPSHOT`、`ACTIVITY_DELTA`、`REASONING_ENCRYPTED_VALUE`（以及 `SUBAGENT_STARTED`，它开启一条新泳道，而不是触碰这一条）；
-- 当运行级事件到达时 —— `RUN_STARTED`、`RUN_FINISHED`、`RUN_ERROR` 或 `MESSAGES_SNAPSHOT` —— 它会关闭每一条泳道；或者当该项所归属的子 Agent终止时，这会关闭该子 Agent的泳道。
+- 当运行级事件到达时 —— `RUN_STARTED`、`RUN_FINISHED`、`RUN_ERROR` 或 `MESSAGES_SNAPSHOT` —— 它会关闭每一条泳道；或者当该项所归属的子 Agent 终止时，这会关闭该子 Agent 的泳道。
 
-一个简写续块属于哪条泳道 —— 父 Agent 的还是某个子 Agent的 —— 由[归属规则](../../events/subagents.md)决定；而对于既不带标识符也不带标签的续块，则由解析决定：若存在父 Agent 的同类打开流，它继续该流，否则继续唯一的同类打开流。当多条泳道都持有该类型的打开流且没有一条属于父 Agent 时，该续块没有唯一的指称对象，必须（MUST）作为有歧义而被拒绝 —— 运行并行子 Agent的生产者必须（MUST）为其续块标注归属。分块流不得（MUST NOT）比其所有者活得久：由子 Agent开启的项，关闭时间不得晚于该子 Agent的终止事件。
+一个简写续块属于哪条泳道 —— 父 Agent 的还是某个子 Agent 的 —— 由[归属规则](../../events/subagents.md)决定；而对于既不带标识符也不带标签的续块，则由解析决定：若存在父 Agent 的同类打开流，它继续该流，否则继续唯一的同类打开流。当多条泳道都持有该类型的打开流且没有一条属于父 Agent 时，该续块没有唯一的指称对象，必须（MUST）作为有歧义而被拒绝 —— 运行并行子 Agent 的生产者必须（MUST）为其续块标注归属。分块流不得（MUST NOT）比其所有者活得久：由子 Agent 开启的项，关闭时间不得晚于该子 Agent 的终止事件。
 
 ### 分块元数据（metadata）
 

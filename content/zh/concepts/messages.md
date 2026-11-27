@@ -232,7 +232,7 @@ interface ReasoningMessage {
 - **隐私优先：** 支持 `store:false` 与零数据留存（ZDR）策略，同时保留推理能力（capability）。
 - **与助手消息分离：** 推理与最终响应保持区分，以避免污染对话历史。
 
-流式事件生命周期见 [推理事件](events.md#推理reasoning事件event)。
+流式事件生命周期见 [推理事件](events.md#推理 reasoning 事件 event)。
 
 ## 厂商中立性
 

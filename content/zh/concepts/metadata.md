@@ -15,7 +15,7 @@ description: "为事件（event）、消息（message）和工具调用（tool c
 | ------------------ | ---------------------------------------------------------------------------------- |
 | 每个事件            | 在基础事件上声明一次，因此所有事件类型都具备                       |
 | 每条消息（message）            | 全部七种角色：developer、system、assistant、user、tool、activity、reasoning     |
-| 每个工具调用（tool call）        | 工具调用不是消息——见[工具调用](#工具调用tool-call)                       |
+| 每个工具调用（tool call）        | 工具调用不是消息——见[工具调用](#工具调用 tool-call)                       |
 | 每个恢复（resume）条目 | 它是请求字段，因此没有任何东西会合并进去——见 [恢复条目](#resume-条目) |
 
 ## 形态
@@ -110,7 +110,7 @@ assistantMessage.toolCalls[0].metadata
 
 `RunAgentInput.resume` 中的每个条目——即客户端在一次以中断（interrupt）结果结束的运行之后，针对每个 interrupt 回送的那份响应——都携带自己的元数据。它保存关于该响应的外层封装数据，例如证明人类决策未被篡改的签名，或路由键；而 Agent 所求的答案属于 `payload`。
 
-恢复条目是请求字段，而不是从流中组装出来的东西，因此**没有合并语义**——没有任何东西会累积到它里面。完整的恢复契约见[中断](interrupts.md#恢复resume一次运行run)。
+恢复条目是请求字段，而不是从流中组装出来的东西，因此**没有合并语义**——没有任何东西会累积到它里面。完整的恢复契约见[中断](interrupts.md#恢复 resume 一次运行 run)。
 
 ## 传输（transport）
 

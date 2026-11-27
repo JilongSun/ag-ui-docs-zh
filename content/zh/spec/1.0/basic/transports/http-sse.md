@@ -16,7 +16,7 @@ description: "默认绑定（binding）：一次携带运行输入（run input�
 - 每个 SSE 事件（event）的 `data` 载荷恰好是一个协议事件的 JSON 对象 —— 绝不多于一个，绝不是片段。多行 `data:` 字段按 SSE 规定的方式拼接。
 - 生产者（producer）必须（MUST）以 LF（`\n`）行尾对流分帧。SSE 语法也接受 CR 与 CRLF，但本绑定固定为每个消费者（consumer）已知都能解析的那一种形式；消费者可以（MAY）额外接受完整语法。
 - 消费者必须（MUST）忽略 `data` 以外的 SSE 字段（`event:`、`id:`、`retry:`），并且必须（MUST）容忍 SSE 注释行（`: keep-alive`），生产者可以（MAY）以任意节奏发送它们。
-- 生产者在最后一次运行的终止事件之后关闭响应正文。一次 POST 携带一个请求；然而当生产者在请求的运行之前重放线程（thread）的历史时，响应仍可以（MAY）携带[多个运行](../../events/lifecycle.md#一条流上的多次运行run)—— 按[绑定契约](index.md#绑定binding契约)，不会有更多输入为它们传输。
+- 生产者在最后一次运行的终止事件之后关闭响应正文。一次 POST 携带一个请求；然而当生产者在请求的运行之前重放线程（thread）的历史时，响应仍可以（MAY）携带[多个运行](../../events/lifecycle.md#一条流上的多次运行 run)—— 按[绑定契约](index.md#绑定 binding 契约)，不会有更多输入为它们传输。
 
 ## 错误
 

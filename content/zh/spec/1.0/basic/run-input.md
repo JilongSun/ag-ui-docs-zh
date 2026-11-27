@@ -3,7 +3,7 @@ title: "运行输入（run input）"
 description: "从应用发往 Agent 的那一条消息（message），以及它每个字段所附带的义务 — 1.0"
 ---
 
-事件（event）从生产者（producer）流向消费者（consumer）。恰好有一条消息（message）反向流动：`RunAgentInput`，每次交互开启时发送一次。生产者关于这次对话所知的一切都经由它到达。它请求的那次运行（run）是本次交互的最后一次；重放某条线程（thread）历史的事件流会[在没有进一步输入的情况下](transports/index.md#绑定binding契约)承载更早的那些运行。
+事件（event）从生产者（producer）流向消费者（consumer）。恰好有一条消息（message）反向流动：`RunAgentInput`，每次交互开启时发送一次。生产者关于这次对话所知的一切都经由它到达。它请求的那次运行（run）是本次交互的最后一次；重放某条线程（thread）历史的事件流会[在没有进一步输入的情况下](transports/index.md#绑定 binding 契约)承载更早的那些运行。
 
 [schema](../schema.md#runagentinput) 定义它的形状；本页说明每个字段附带的义务。生产者可以（MAY）在 `RUN_STARTED.input` 上回显该输入，这样没有发起请求的消费者也能看到 Agent 被要求了什么。
 

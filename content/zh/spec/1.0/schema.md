@@ -50,7 +50,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。该片段所属的消息。
 - `delta` — `string`，**必需**。要追加的片段。可以是空字符串：提供方会把空增量（delta）当作保活发送，也会在工具调用（tool call）尚未决定时发送，拒绝它们会杀掉本来运行正常的运行（run）。
 
@@ -68,7 +68,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。正在关闭的消息。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -85,7 +85,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，可选。该分片所属的消息。缺省时续接已经打开的那条消息。
 - `role` — [`TextMessageRole`](#textmessagerole)，可选。消息来自谁，写在开启它的那个分片上。
 - `delta` — `string`，可选。要追加的片段。可以是空字符串。
@@ -105,7 +105,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `toolCallId` — `string`，**必需**。标识该调用，并把后续的 args、结束与结果事件与它关联起来。
 - `toolCallName` — `string`，**必需**。正在调用哪个工具。
 - `parentMessageId` — `string`，可选。容纳该调用的助手消息。缺省表示生产者没有把它归于某一条消息。
@@ -124,7 +124,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `toolCallId` — `string`，**必需**。这些参数所属的调用。
 - `delta` — `string`，**必需**。参数的一个片段，这些片段拼接成该调用的参数文本——按惯例是一个 JSON 文档，尽管协议并不校验它（见 FunctionCall.arguments）。刻意用字符串而不是解析后的 JSON：片段本身并不是一个文档。可以是空字符串。
 
@@ -142,7 +142,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `toolCallId` — `string`，**必需**。正在关闭的调用。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -159,7 +159,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `toolCallId` — `string`，可选。该分片所属的调用。缺省时续接已经打开的那次调用。
 - `toolCallName` — `string`，可选。正在调用哪个工具，写在开启它的那个分片上。
 - `parentMessageId` — `string`，可选。容纳该调用的助手消息。
@@ -179,7 +179,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。该结果将成为的工具消息。
 - `toolCallId` — `string`，**必需**。正在被回答的调用。
 - `content` — `string` | [`ContentPart`](#contentpart) 的数组，**必需**。工具返回的内容：或者是纯文本，或者是有序的片段列表，与本事件所铸造的工具消息完全一致。返回结构化数据的工具会把它序列化成文本；媒体则以自己的片段形式传递。
@@ -199,7 +199,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `snapshot` — [`State`](#state)，**必需**。完整的新状态。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -216,7 +216,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `delta` — [`JsonPatch`](#jsonpatch)，**必需**。该变化，作为针对当前状态的 RFC 6902 补丁。这里的结构合法并不意味着补丁能被应用：一个形式良好的操作可能指向不存在的路径，这一点 RFC 6902 留给应用方。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -225,7 +225,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `MessagesSnapshotEvent`
 
-生产者所拥有的全部消息，按顺序排列。它是整段对话范围的，而不是简单的覆盖：消费者可能保留自己的、任何生产者都不跟踪的消息，因此快照（snapshot）究竟如何与这些消息协调，属于行为问题，写在正文里。由于是整段对话范围的，它不可能只属于某一个子 Agent，所以它不携带归属；但它通过消息本身，确定了所包含的每条消息归哪个子 Agent所有。
+生产者所拥有的全部消息，按顺序排列。它是整段对话范围的，而不是简单的覆盖：消费者可能保留自己的、任何生产者都不跟踪的消息，因此快照（snapshot）究竟如何与这些消息协调，属于行为问题，写在正文里。由于是整段对话范围的，它不可能只属于某一个子 Agent，所以它不携带归属；但它通过消息本身，确定了所包含的每条消息归哪个子 Agent 所有。
 
 **字段：**
 
@@ -249,7 +249,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。该事件所描述的活动消息。
 - `activityType` — `string`，**必需**。这是什么种类的活动（activity）。开放字符串：取值集合由生产者决定，而不是协议决定。
 - `content` — `object`，按键开放，**必需**。活动的载荷，按键开放。
@@ -269,7 +269,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。正在被改变的活动消息。
 - `activityType` — `string`，**必需**。这是什么种类的活动。
 - `patch` — [`JsonPatch`](#jsonpatch)，**必需**。该变化，作为针对活动内容的 RFC 6902 补丁。
@@ -288,7 +288,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `event` — 任意 JSON 值，**必需**。提供方自己的事件。任意 JSON 值，且为必需：一个唯一用途就是承载它的事件，没有它便什么也表达不了。
 - `source` — `string`，可选。该事件来自哪个提供方或框架。
 
@@ -306,7 +306,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `name` — `string`，**必需**。这个自定义事件是什么。必需：没有它，消费者无法路由该值。
 - `value` — 任意 JSON 值，**必需**。载荷。任意 JSON 值，且为必需。
 
@@ -316,7 +316,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `RunStartedEvent`
 
-开启一次运行。它属于运行作用域，因此不携带子 Agent归属。
+开启一次运行。它属于运行作用域，因此不携带子 Agent 归属。
 
 **字段：**
 
@@ -327,7 +327,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `threadId` — `string`，**必需**。该运行所属的对话。
 - `runId` — `string`，**必需**。标识该运行。
 - `protocolVersion` — `string`，可选。该生产者所说的协议版本，例如 "1.0"——是生产者自己的版本，而不是对输入版本的复述，正因如此两者合起来才构成协商：每一侧都声明自己，消费者在降级发生的那一刻就能看到。缺省表示这是一个早于协议携带版本的年代的生产者。
-- `parentRunId` — `string`，可选。产生本次运行的那次运行，用于 Agent 以独立运行而非同一次运行内的子 Agent方式调用另一个 Agent 的情形。
+- `parentRunId` — `string`，可选。产生本次运行的那次运行，用于 Agent 以独立运行而非同一次运行内的子 Agent 方式调用另一个 Agent 的情形。
 - `input` — [`RunAgentInput`](#runagentinput)，可选。启动本次运行的那个请求，回显出来，以便没有发出该请求的消费者也能看到 Agent 被要求了什么。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -336,7 +336,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `RunFinishedEvent`
 
-关闭一次没有失败的运行。它属于运行作用域，因此不携带子 Agent归属。
+关闭一次没有失败的运行。它属于运行作用域，因此不携带子 Agent 归属。
 
 **字段：**
 
@@ -348,7 +348,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `runId` — `string`，**必需**。正在关闭的运行。
 - `result` — 除 `null` 外的任意 JSON 值，可选。该运行的返回值，如果有的话。任意 JSON 值。
 - `outcome` — [`RunFinishedOutcome`](#runfinishedoutcome)，可选。运行为何结束。缺省表示成功，因此每个在结果出现之前写就的生产者本来就已经符合规范。
-- `usage` — [`TokenUsage`](#tokenusage) 的数组，可选。该运行的 token 用量，每个提供方与模型一条，因此调用了多个模型的运行会把它们分开保存。只想要总量的消费者把各条目相加即可。运行是记账边界：用量覆盖运行内发生的每一次模型调用，包括其子 Agent所作的调用；作为 parentRunId 下的独立运行被调用的 Agent，在自己的终结事件上报告自己的用量；而从被中断的运行恢复（resume）的运行，只报告它自己所作的调用，不含被中断那次运行的。
+- `usage` — [`TokenUsage`](#tokenusage) 的数组，可选。该运行的 token 用量，每个提供方与模型一条，因此调用了多个模型的运行会把它们分开保存。只想要总量的消费者把各条目相加即可。运行是记账边界：用量覆盖运行内发生的每一次模型调用，包括其子 Agent 所作的调用；作为 parentRunId 下的独立运行被调用的 Agent，在自己的终结事件上报告自己的用量；而从被中断的运行恢复（resume）的运行，只报告它自己所作的调用，不含被中断那次运行的。
 
 封闭对象：schema 拒绝未在此列出的成员。
 
@@ -356,7 +356,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `RunErrorEvent`
 
-结束一次失败的运行。它属于运行作用域，因此不携带子 Agent归属；一个失败了却没有结束运行的子 Agent改为报告 SUBAGENT_ERROR。
+结束一次失败的运行。它属于运行作用域，因此不携带子 Agent 归属；一个失败了却没有结束运行的子 Agent 改为报告 SUBAGENT_ERROR。
 
 **字段：**
 
@@ -382,7 +382,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `stepName` — `string`，**必需**。步骤的名称。它标识该步骤：与之匹配的 STEP_FINISHED 携带相同的名称。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -399,7 +399,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `stepName` — `string`，**必需**。正在关闭的步骤。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -416,7 +416,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。正在开启的区间。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -433,7 +433,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。本次流所构建的推理消息。
 - `role` — `"reasoning"`，**必需**。固定值，且是必需而不是带默认值。这一要求继承自各 SDK，而不是特意选择的。
 
@@ -451,7 +451,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。该片段所属的推理消息。
 - `delta` — `string`，**必需**。要追加的片段。可以是空字符串。
 
@@ -469,7 +469,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。正在关闭的推理消息。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -486,7 +486,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，可选。该分片所属的推理消息。缺省时续接已经打开的那条。
 - `delta` — `string`，可选。要追加的片段。可以是空字符串。
 
@@ -504,7 +504,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `messageId` — `string`，**必需**。正在关闭的区间。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -521,9 +521,9 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `timestamp` — `integer` (min -9007199254740991, max 9007199254740991)，可选。事件创建的时间。被限制在 JSON 数字能无损往返的范围内，因此消费者读到的值就是生产者写入的值。刻意不用浮点数。单位在这里不受约束，因为规范从未对它做过规范性规定；实际上每个设置它的 SDK 都用 Unix 纪元以来的毫秒数，而选择其它单位的生产者虽然能通过校验，却会被消费者误读。协议中没有任何计算会用到这个值。
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `subtype` — [`ReasoningEncryptedValueSubtype`](#reasoningencryptedvaluesubtype)，**必需**。entityId 命名的是什么种类的东西，它决定该值存放的位置。
-- `entityId` — `string`，**必需**。该值属于谁：根据 subtype，是一个消息id 还是一个工具调用id。
+- `entityId` — `string`，**必需**。该值属于谁：根据 subtype，是一个消息 id 还是一个工具调用 id。
 - `encryptedValue` — `string`，**必需**。提供方的不透明产物。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -532,7 +532,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `SubagentStartedEvent`
 
-宣告一次子 Agent调用已经开始。此后该子 Agent产生的所有内容，都通过携带其 subagentRunId 来标注归属，这样消费者不必重放整个流就能把这项工作归组。它只组合BaseEvent 而不组合Attributable，因为这里的 subagentRunId 标识的是子 Agent本身，而不是给事件标注归属；对外层子 Agent的归属用的是 parentSubagentRunId。
+宣告一次子 Agent 调用已经开始。此后该子 Agent 产生的所有内容，都通过携带其 subagentRunId 来标注归属，这样消费者不必重放整个流就能把这项工作归组。它只组合 BaseEvent 而不组合 Attributable，因为这里的 subagentRunId 标识的是子 Agent 本身，而不是给事件标注归属；对外层子 Agent 的归属用的是 parentSubagentRunId。
 
 **字段：**
 
@@ -541,10 +541,10 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
 - `subagentRunId` — [`SubagentRunId`](#subagentrunid)，**必需**。正在宣告的调用。
-- `name` — `string`，**必需**。子 Agent的名称，它可以在多次调用之间重复使用，与 subagentRunId 不同。
-- `description` — `string`，可选。该子 Agent是用来做什么的，供消费者展示。
-- `parentSubagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。产生本次调用的子 Agent调用，用于嵌套委派。缺省表示由父 Agent 直接产生。
-- `parentToolCallId` — `string`，可选。产生该子 Agent的工具调用，用于把 Agent 作为工具暴露给模型的模式。它让消费者不必读取 rawEvent 就能把子 Agent与该调用关联起来。
+- `name` — `string`，**必需**。子 Agent 的名称，它可以在多次调用之间重复使用，与 subagentRunId 不同。
+- `description` — `string`，可选。该子 Agent 是用来做什么的，供消费者展示。
+- `parentSubagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。产生本次调用的子 Agent 调用，用于嵌套委派。缺省表示由父 Agent 直接产生。
+- `parentToolCallId` — `string`，可选。产生该子 Agent 的工具调用，用于把 Agent 作为工具暴露给模型的模式。它让消费者不必读取 rawEvent 就能把子 Agent 与该调用关联起来。
 - `parentMessageId` — `string`，可选。容纳了产生它的工具调用的那条消息。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -553,7 +553,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `SubagentFinishedEvent`
 
-结束某次子 Agent调用在这次运行中的片段，或因为工作已完成，或因为它被挂起以等待外部输入。
+结束某次子 Agent 调用在这次运行中的片段，或因为工作已完成，或因为它被挂起以等待外部输入。
 
 **字段：**
 
@@ -562,8 +562,8 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 - `rawEvent` — 除 `null` 外的任意 JSON 值，可选。本事件译自的提供方原生事件，逐字携带，供调试以及需要协议未建模细节的消费者使用。任意 JSON 值。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该事件的额外信息。
 - `subagentRunId` — [`SubagentRunId`](#subagentrunid)，**必需**。正在关闭的调用。
-- `result` — 除 `null` 外的任意 JSON 值，可选。子 Agent的返回值，如果有的话。任意 JSON 值，镜像 RUN_FINISHED.result。
-- `outcome` — [`SubagentFinishedOutcome`](#subagentfinishedoutcome)，可选。该片段为何结束。缺省表示成功。挂起的子 Agent既不是成功也不是失败，正因如此需要一个自己的值来表明，而不是从之后的中断（interrupt）推断。
+- `result` — 除 `null` 外的任意 JSON 值，可选。子 Agent 的返回值，如果有的话。任意 JSON 值，镜像 RUN_FINISHED.result。
+- `outcome` — [`SubagentFinishedOutcome`](#subagentfinishedoutcome)，可选。该片段为何结束。缺省表示成功。挂起的子 Agent 既不是成功也不是失败，正因如此需要一个自己的值来表明，而不是从之后的中断（interrupt）推断。
 
 封闭对象：schema 拒绝未在此列出的成员。
 
@@ -571,7 +571,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `SubagentErrorEvent`
 
-报告某次子 Agent调用失败。运行仍可继续：父 Agent可以自行处理失败的子 Agent，这也是它不是 RUN_ERROR 的原因。
+报告某次子 Agent 调用失败。运行仍可继续：父 Agent 可以自行处理失败的子 Agent，这也是它不是 RUN_ERROR 的原因。
 
 **字段：**
 
@@ -645,7 +645,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。在对话内标识该消息。
 - `role` — `"developer"`，**必需**。消息来自谁。每个消息定义都会把它收窄为单个值。
 - `name` — `string`，可选。作者的可选显示名称。
@@ -663,7 +663,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。在对话内标识该消息。
 - `role` — `"system"`，**必需**。消息来自谁。每个消息定义都会把它收窄为单个值。
 - `name` — `string`，可选。作者的可选显示名称。
@@ -681,7 +681,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。在对话内标识该消息。
 - `role` — `"assistant"`，**必需**。消息来自谁。每个消息定义都会把它收窄为单个值。
 - `name` — `string`，可选。作者的可选显示名称。
@@ -700,7 +700,7 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。在对话内标识该消息。
 - `role` — `"user"`，**必需**。消息来自谁。每个消息定义都会把它收窄为单个值。
 - `name` — `string`，可选。作者的可选显示名称。
@@ -714,13 +714,13 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `ToolMessage`
 
-工具返回的内容，作为对话中的一条消息。它独立存在，不组合BaseMessage，因为它不携带 name。
+工具返回的内容，作为对话中的一条消息。它独立存在，不组合 BaseMessage，因为它不携带 name。
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。标识该消息。
-- `role` — `"tool"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合BaseMessage。
+- `role` — `"tool"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合 BaseMessage。
 - `content` — `string` | [`ContentPart`](#contentpart) 的数组，**必需**。工具返回的内容：或者是纯文本，或者是有序的片段列表。返回结构化数据的工具会把它序列化成文本；媒体则以自己的片段形式传递。
 - `toolCallId` — `string`，**必需**。本条消息所回答的调用。
 - `error` — `string`，可选。工具失败的原因，如果它失败了。它与 content 并存而不是取而代之，因此部分结果能在失败中留存。
@@ -733,13 +733,13 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `ActivityMessage`
 
-不属于对话内容的结构化进度，被物化为一条消息，从而在序列中保住自己的位置。它独立存在，不组合BaseMessage，因为它的 content 是对象而不是字符串。
+不属于对话内容的结构化进度，被物化为一条消息，从而在序列中保住自己的位置。它独立存在，不组合 BaseMessage，因为它的 content 是对象而不是字符串。
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。标识该消息。
-- `role` — `"activity"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合BaseMessage。
+- `role` — `"activity"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合 BaseMessage。
 - `activityType` — `string`，**必需**。这是什么种类的活动。开放字符串：取值集合由生产者决定。
 - `content` — `object`，按键开放，**必需**。活动的载荷，按键开放。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该消息的额外信息。
@@ -750,13 +750,13 @@ description: "1.0 schema 的每一项定义，各占一个锚点——自动生�
 
 ### `ReasoningMessage`
 
-Agent 推理的一个区间，被物化为一条消息。它独立存在，不组合BaseMessage，因为它不携带 name。
+Agent 推理的一个区间，被物化为一条消息。它独立存在，不组合 BaseMessage，因为它不携带 name。
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。标识该消息。
-- `role` — `"reasoning"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合BaseMessage。
+- `role` — `"reasoning"`，**必需**。固定值。在此声明而不是继承，因为该消息不组合 BaseMessage。
 - `content` — `string`，**必需**。推理文本。
 - `encryptedValue` — `string`，可选。属于该消息的提供方不透明推理产物。
 - `metadata` — [`Metadata`](#metadata)，可选。附加到该消息的额外信息。
@@ -960,7 +960,7 @@ Agent 可以调用的工具。
 
 ### `RunAgentInput`
 
-一次运行Agent 的请求。它也作为 RUN_STARTED.input 回显。只有 threadId、runId 和 messages 是必需的：这三个正是各 SDK 已经达成一致的，而对于 tools 和 context，缺少该键与空数组含义相同，所以把它们设为必需也抓不住生产者可能犯的任何错误。
+一次运行 Agent 的请求。它也作为 RUN_STARTED.input 回显。只有 threadId、runId 和 messages 是必需的：这三个正是各 SDK 已经达成一致的，而对于 tools 和 context，缺少该键与空数组含义相同，所以把它们设为必需也抓不住生产者可能犯的任何错误。
 
 **字段：**
 
@@ -979,7 +979,7 @@ Agent 可以调用的工具。
 
 ## 结果与中断（interrupt）
 
-运行与子 Agent如何报告结束，以及一次被中断的运行在等待什么。行为细节见[中断与恢复](basic/patterns/interrupt-resume.md)。
+运行与子 Agent 如何报告结束，以及一次被中断的运行在等待什么。行为细节见[中断与恢复](basic/patterns/interrupt-resume.md)。
 
 ### `RunFinishedSuccessOutcome`
 
@@ -998,7 +998,7 @@ Agent 可以调用的工具。
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。标识该中断。恢复条目通过这个 id 回答它。
 - `reason` — `string`，**必需**。运行为何停下。是开放字符串而不是枚举：协议并不试图对 Agent 可能需要输入的每一种原因分类。
 - `message` — `string`，可选。给回答者看的人类可读提示。
@@ -1046,7 +1046,7 @@ Agent 可以调用的工具。
 
 ### `SubagentFinishedSuccessOutcome`
 
-子 Agent完成了它的工作。等同于缺少结果。
+子 Agent 完成了它的工作。等同于缺少结果。
 
 **字段：**
 
@@ -1056,18 +1056,18 @@ Agent 可以调用的工具。
 
 ### `SubagentFinishedSuspendedOutcome`
 
-子 Agent已暂停，等待外部输入。这对本次流是终结性的，但对子 Agent不是：一旦这些中断被回答，之后的运行可以继续同一次调用。
+子 Agent 已暂停，等待外部输入。这对本次流是终结性的，但对子 Agent 不是：一旦这些中断被回答，之后的运行可以继续同一次调用。
 
 **字段：**
 
 - `type` — `"suspended"`，**必需**。判别字段。
-- `interruptIds` — `string` 的数组，可选。该子 Agent自己提出的运行级中断。可以为空或缺省：因为某个后代中断而挂起的子 Agent本身并不拥有任何中断。每项：一个 Interrupt.id。
+- `interruptIds` — `string` 的数组，可选。该子 Agent 自己提出的运行级中断。可以为空或缺省：因为某个后代中断而挂起的子 Agent 本身并不拥有任何中断。每项：一个 Interrupt.id。
 
 封闭对象：schema 拒绝未在此列出的成员。
 
 ### `SubagentFinishedOutcome`
 
-子 Agent在一次运行中的片段为何结束。它在下一层级上镜像 RunFinishedOutcome。
+子 Agent 在一次运行中的片段为何结束。它在下一层级上镜像 RunFinishedOutcome。
 
 **成员：**
 
@@ -1088,7 +1088,7 @@ Agent 可以调用的工具。
 
 ### `SubagentRunId`
 
-某一次子 Agent调用的不透明句柄，而不是子 Agent定义的可复用名称：同一子 Agent的两次调用携带两个不同的值。命名上镜像下一层级的 runId，就像子 Agent的 name 镜像 agentId 一样。
+某一次子 Agent 调用的不透明句柄，而不是子 Agent 定义的可复用名称：同一子 Agent 的两次调用携带两个不同的值。命名上镜像下一层级的 runId，就像子 Agent 的 name 镜像 agentId 一样。
 
 **类型：** `string`
 
@@ -1209,7 +1209,7 @@ Agent 状态。任意 JSON 值：协议只承载状态而不解释它，因此�
 
 ### `ToolCall`
 
-助手消息发出的一次调用。它自身不携带子 Agent归属，而是继承其所属消息的归属，因为多次调用可以共享同一个父级。
+助手消息发出的一次调用。它自身不携带子 Agent 归属，而是继承其所属消息的归属，因为多次调用可以共享同一个父级。
 
 **字段：**
 
@@ -1248,12 +1248,12 @@ REASONING_ENCRYPTED_VALUE 属于一条消息还是一次工具调用。
 
 ### `SubagentInfo`
 
-描述一个可由父 Agent调用的子 Agent。
+描述一个可由父 Agent 调用的子 Agent。
 
 **字段：**
 
-- `name` — `string`，**必需**。该子 Agent的唯一名称或标识符。
-- `description` — `string`，可选。该子 Agent擅长什么。帮助客户端构建 Agent 选择 UI。
+- `name` — `string`，**必需**。该子 Agent 的唯一名称或标识符。
+- `description` — `string`，可选。该子 Agent 擅长什么。帮助客户端构建 Agent 选择 UI。
 
 封闭对象：schema 拒绝未在此列出的成员。
 
@@ -1313,7 +1313,7 @@ REASONING_ENCRYPTED_VALUE 属于一条消息还是一次工具调用。
 
 ### `StateCapabilities`
 
-状态与记忆管理能力。它们告诉客户端Agent 如何处理共享状态，以及对话上下文是否在多次运行之间持续存在。
+状态与记忆管理能力。它们告诉客户端 Agent 如何处理共享状态，以及对话上下文是否在多次运行之间持续存在。
 
 **字段：**
 
@@ -1333,7 +1333,7 @@ REASONING_ENCRYPTED_VALUE 属于一条消息还是一次工具调用。
 - `supported` — `boolean`，可选。如果 Agent 参与任何形式的多 Agent 协调，设为 true。
 - `delegation` — `boolean`，可选。如果 Agent 能把子任务委派给其它 Agent 并同时保留控制权，设为 true。
 - `handoffs` — `boolean`，可选。如果 Agent 能把对话完全移交给另一个 Agent，设为 true。
-- `subagents` — [`SubagentInfo`](#subagentinfo) 的数组，可选。该 Agent 可以调用的子 Agent列表。帮助客户端构建 Agent 选择 UI。
+- `subagents` — [`SubagentInfo`](#subagentinfo) 的数组，可选。该 Agent 可以调用的子 Agent 列表。帮助客户端构建 Agent 选择 UI。
 
 封闭对象：schema 拒绝未在此列出的成员。
 
@@ -1344,7 +1344,7 @@ REASONING_ENCRYPTED_VALUE 属于一条消息还是一次工具调用。
 **字段：**
 
 - `supported` — `boolean`，可选。如果 Agent 产出对客户端可见的推理/thinking token，设为 true。
-- `streaming` — `boolean`，可选。如果推理token 是增量流式传输的（而不是一次性返回），设为 true。
+- `streaming` — `boolean`，可选。如果推理 token 是增量流式传输的（而不是一次性返回），设为 true。
 - `encrypted` — `boolean`，可选。如果推理内容被加密（零数据留存模式），设为 true。客户端应当预期看到不透明的 encryptedValue 字段，而不是可读内容。
 
 封闭对象：schema 拒绝未在此列出的成员。
@@ -1439,11 +1439,11 @@ Agent 可以作为输出产生的模态。客户端用它来预期 Agent 响应�
 
 ### `Attributable`
 
-被组合进一切可能属于某个子 Agent工作的定义：描述内容或进度的事件、各类消息，以及每一个中断。属于运行作用域的事件不带它——RUN_STARTED、RUN_FINISHED 和 RUN_ERROR 描述的是运行本身，而 MESSAGES_SNAPSHOT 是整段对话范围的，所以它们都不属于某一个子 Agent。工具调用也不带它，而是继承其所属消息的归属。
+被组合进一切可能属于某个子 Agent 工作的定义：描述内容或进度的事件、各类消息，以及每一个中断。属于运行作用域的事件不带它——RUN_STARTED、RUN_FINISHED 和 RUN_ERROR 描述的是运行本身，而 MESSAGES_SNAPSHOT 是整段对话范围的，所以它们都不属于某一个子 Agent。工具调用也不带它，而是继承其所属消息的归属。
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 
 
 ### `BaseEvent`
@@ -1464,7 +1464,7 @@ Agent 可以作为输出产生的模态。客户端用它来预期 Agent 响应�
 
 **字段：**
 
-- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent调用。缺省表示由父 Agent 直接产生。
+- `subagentRunId` — [`SubagentRunId`](#subagentrunid)，可选。该项所属的子 Agent 调用。缺省表示由父 Agent 直接产生。
 - `id` — `string`，**必需**。在对话内标识该消息。
 - `role` — `string`，**必需**。消息来自谁。每个消息定义都会把它收窄为单个值。
 - `name` — `string`，可选。作者的可选显示名称。

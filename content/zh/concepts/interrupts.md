@@ -75,7 +75,7 @@ type Interrupt = {
 | `responseSchema` | 针对期望的 `resume.payload` 的 JSON Schema。 |
 | `expiresAt`      | 可选的 ISO-8601 TTL。过期的恢复会产生 `RunError`。 |
 | `metadata`       | 自由格式的、框架特定的数据。 |
-| `subagentRunId`  | 提出该中断的那份工作所属的子 Agent（subagent）——由根 Agent 提出的中断则没有该字段。归属信息按中断逐条存放，因为一次运行可能承载来自多个子 Agent的中断。若生产者会发出子 Agent生命周期事件，它还会以 `outcome: { type: "suspended" }` 关闭该子 Agent——生命周期事件始终是可选的，因此这里的归属信息可以独立成立（参见 [子 Agent](subagents.md#挂起)）。 |
+| `subagentRunId`  | 提出该中断的那份工作所属的子 Agent（subagent）——由根 Agent 提出的中断则没有该字段。归属信息按中断逐条存放，因为一次运行可能承载来自多个子 Agent 的中断。若生产者会发出子 Agent 生命周期事件，它还会以 `outcome: { type: "suspended" }` 关闭该子 Agent——生命周期事件始终是可选的，因此这里的归属信息可以独立成立（参见 [子 Agent](subagents.md#挂起)）。 |
 
 ## 恢复（resume）一次运行（run）
 

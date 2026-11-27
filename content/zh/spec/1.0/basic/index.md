@@ -25,7 +25,7 @@ description: "事件（event）的信封、其通用字段、各类标识符，�
 - `rawEvent` —— 可选（OPTIONAL）。该事件由之翻译而来的提供方原生事件，逐字携带。消费者不得（MUST NOT）从中推导协议行为。
 - `metadata` —— 可选（OPTIONAL）。参见[通用字段](#通用字段)。
 
-可以归属于子 Agent（subagent）工作的事件还会额外携带一个可选（OPTIONAL）的 `subagentRunId`（schema 中的 `Attributable`）；它由[子 Agent规则](../events/subagents.md)约束。运行级事件——`RUN_STARTED`、`RUN_FINISHED`、`RUN_ERROR`、`MESSAGES_SNAPSHOT`——描述的是整个运行或整个会话，不携带归属。
+可以归属于子 Agent（subagent）工作的事件还会额外携带一个可选（OPTIONAL）的 `subagentRunId`（schema 中的 `Attributable`）；它由[子 Agent 规则](../events/subagents.md)约束。运行级事件——`RUN_STARTED`、`RUN_FINISHED`、`RUN_ERROR`、`MESSAGES_SNAPSHOT`——描述的是整个运行或整个会话，不携带归属。
 
 ## 通用字段
 
@@ -52,7 +52,7 @@ description: "事件（event）的信封、其通用字段、各类标识符，�
 - `runId` 标识一次运行。不得（MUST NOT）把它复用于同一线程（thread）上的另一次运行。
 - `messageId` 标识一条消息。它跨越运行边界——后续运行中的快照（snapshot）可以（MAY）按 id 重述某条消息——因此它在所属线程内必须（MUST）唯一。
 - `toolCallId` 标识一次工具调用（tool call），并把它自己的结果以及任何与它相关的中断（interrupt）回指到它。
-- `subagentRunId` 是某次子 Agent*调用*的不透明句柄，而不是子 Agent定义的可复用名称：同一个子 Agent的两次调用携带两个不同的值。
+- `subagentRunId` 是某次子 Agent*调用*的不透明句柄，而不是子 Agent 定义的可复用名称：同一个子 Agent 的两次调用携带两个不同的值。
 
 所有标识符都是不透明字符串：消费者不得（MUST NOT）从中解析出结构。
 

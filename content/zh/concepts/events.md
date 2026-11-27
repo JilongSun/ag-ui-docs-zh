@@ -18,7 +18,7 @@ Agent User Interaction Protocol 采用基于事件（event）的流式架构。�
 | 工具调用（tool call）事件 | 管理 Agent 发起的工具执行 |
 | 状态（state）管理事件 | 在 Agent 与 UI 之间同步状态 |
 | 活动（activity）事件 | 表示进行中的活动进度 |
-| 子 Agent（subagent）事件 | 跟踪子 Agent并归属其输出 |
+| 子 Agent（subagent）事件 | 跟踪子 Agent 并归属其输出 |
 | 特殊事件 | 支持自定义功能 |
 | 草案事件 | 开发中、尚在提案阶段的事件 |
 
@@ -39,7 +39,7 @@ Agent User Interaction Protocol 采用基于事件（event）的流式架构。�
 
 消费者（consumer）会把事件的 metadata 逐个 key 合并进该事件所构建的消息（message），后写覆盖先写。正因如此，生产者（producer）可以在消息的最后一个事件上发送 token 用量，而不必事先就知道它。
 
-完整规则见 [元数据（Metadata）](metadata.md)：保留的 `ag-ui` 键、哪些事件会合并metadata 而哪些不会、工具调用如何携带自己的 metadata，以及该对象在不同传输（transport）下的行为。
+完整规则见 [元数据（Metadata）](metadata.md)：保留的 `ag-ui` 键、哪些事件会合并 metadata 而哪些不会、工具调用如何携带自己的 metadata，以及该对象在不同传输（transport）下的行为。
 
 大多数事件还接受一个可选的 `subagentRunId`，用于标识产生该事件的子 Agent。不带它的事件归属于父 Agent。见[子 Agent](subagents.md)。
 
@@ -527,11 +527,11 @@ sequenceDiagram
 
 ## 子 Agent（subagent）事件（event）
 
-子 Agent事件让 Agent 能够报告它把工作委派给了某个子 Agent，使前端可以区分哪段输出由哪个子 Agent产生。没有它们，三个并发流式输出的子 Agent会汇成一条无法区分的流。
+子 Agent 事件让 Agent 能够报告它把工作委派给了某个子 Agent，使前端可以区分哪段输出由哪个子 Agent 产生。没有它们，三个并发流式输出的子 Agent 会汇成一条无法区分的流。
 
-归属信息由大多数其他事件上的可选 `subagentRunId` 承载；而下面这三个事件为子 Agent的活动划出边界，并给它一个可供展示的名字。
+归属信息由大多数其他事件上的可选 `subagentRunId` 承载；而下面这三个事件为子 Agent 的活动划出边界，并给它一个可供展示的名字。
 
-`subagentRunId` 标识的是**一次调用**，而不是可复用的子 Agent定义——同一个子 Agent运行两次会产生两个不同的值。完整模型（包括嵌套、并发以及客户端强制执行的规则）见[子 Agent](subagents.md)。
+`subagentRunId` 标识的是**一次调用**，而不是可复用的子 Agent 定义——同一个子 Agent 运行两次会产生两个不同的值。完整模型（包括嵌套、并发以及客户端强制执行的规则）见[子 Agent](subagents.md)。
 
 ```mermaid
 sequenceDiagram
@@ -554,30 +554,30 @@ sequenceDiagram
 
 ### SubagentStarted
 
-宣告一次新的子 Agent调用。
+宣告一次新的子 Agent 调用。
 
 | 属性 | 说明 |
 | --------------------- | -------------------------------------------------------- |
 | `subagentRunId`       | 本次调用的不透明标识符 |
-| `name`                | 子 Agent声明的名称或类型，用于展示 |
+| `name`                | 子 Agent 声明的名称或类型，用于展示 |
 | `description`         | 可选的人类可读描述 |
-| `parentSubagentRunId` | 可选的外层子 Agent，在子 Agent嵌套时使用 |
-| `parentToolCallId`    | 可选的、催生该子 Agent的工具调用 |
+| `parentSubagentRunId` | 可选的外层子 Agent，在子 Agent 嵌套时使用 |
+| `parentToolCallId`    | 可选的、催生该子 Agent 的工具调用 |
 | `parentMessageId`     | 可选的、承载该工具调用的消息 |
 
 ### SubagentFinished
 
-把一次子 Agent调用标记为完成。
+把一次子 Agent 调用标记为完成。
 
 | 属性 | 说明 |
 | --------------- | ----------------------------------------------------------- |
 | `subagentRunId` | 与 SubagentStarted 中的 ID 一致 |
 | `result`        | 可选的完成载荷，与 `RunFinished.result` 对应 |
-| `outcome`       | 可选的判别联合：`{ type: "success" }` 或 `{ type: "suspended", interruptIds?: string[] }`。省略表示成功（旧式读法）。`suspended` 表示子 Agent在执行中途被检查点化，等待外部输入——此时运行会以中断结果结束，而 `interruptIds` 指明了哪些运行级中断的答案可以恢复该子 Agent。 |
+| `outcome`       | 可选的判别联合：`{ type: "success" }` 或 `{ type: "suspended", interruptIds?: string[] }`。省略表示成功（旧式读法）。`suspended` 表示子 Agent 在执行中途被检查点化，等待外部输入——此时运行会以中断结果结束，而 `interruptIds` 指明了哪些运行级中断的答案可以恢复该子 Agent。 |
 
 ### SubagentError
 
-把一次子 Agent调用标记为失败。
+把一次子 Agent 调用标记为失败。
 
 | 属性 | 说明 |
 | --------------- | ------------------------------- |
@@ -586,7 +586,7 @@ sequenceDiagram
 | `code`          | 可选的错误码 |
 
 > [!NOTE]
-> `StateSnapshot` 与 `StateDelta` 是可归属的，但它们上面的归属是**出处，而不是所有权**：它记录的是哪个子 Agent产生了这次更新。状态仍以运行为作用域，带归属的快照或 delta 会被应用到该运行唯一的状态文档上，与不带归属时完全一样。不存在按子 Agent划分的状态。
+> `StateSnapshot` 与 `StateDelta` 是可归属的，但它们上面的归属是**出处，而不是所有权**：它记录的是哪个子 Agent 产生了这次更新。状态仍以运行为作用域，带归属的快照或 delta 会被应用到该运行唯一的状态文档上，与不带归属时完全一样。不存在按子 Agent 划分的状态。
 
 ## 已弃用（deprecated）事件（event）
 
@@ -605,7 +605,7 @@ sequenceDiagram
 | `THINKING_TEXT_MESSAGE_CONTENT` | `REASONING_MESSAGE_CONTENT` |
 | `THINKING_TEXT_MESSAGE_END`     | `REASONING_MESSAGE_END`     |
 
-详细的迁移指引见[推理迁移](reasoning.md#从-thinking-事件event迁移)。
+详细的迁移指引见[推理迁移](reasoning.md#从-thinking-事件 event 迁移)。
 
 ## 草案事件（event）
 

@@ -1,64 +1,64 @@
 ---
 title: "运行输入（run input）"
-description: "从应用（application）发往 Agent 的那一条消息（message），以及它每个字段（field）所附带的义务 — 1.0"
+description: "从应用发往 Agent 的那一条消息（message），以及它每个字段所附带的义务 — 1.0"
 ---
 
-事件（event）从生产者（producer）流向消费者（consumer）。恰好有一条消息（message）反向流动：`RunAgentInput`，每次交互（exchange）开启时发送一次。生产者（producer）关于这次对话所知的一切都经由它到达。它请求的那次运行（run）是本次交互（exchange）的最后一次；重放某条线程（thread）历史的事件流（stream）会[在没有进一步输入的情况下](transports/index.md#绑定binding契约)承载更早的那些运行（run）。
+事件（event）从生产者（producer）流向消费者（consumer）。恰好有一条消息（message）反向流动：`RunAgentInput`，每次交互开启时发送一次。生产者关于这次对话所知的一切都经由它到达。它请求的那次运行（run）是本次交互的最后一次；重放某条线程（thread）历史的事件流会[在没有进一步输入的情况下](transports/index.md#绑定binding契约)承载更早的那些运行。
 
-[schema](../schema.md#runagentinput) 定义它的形状；本页说明每个字段（field）附带的义务。生产者（producer）可以（MAY）在 `RUN_STARTED.input` 上回显该输入，这样没有发起请求的消费者（consumer）也能看到 Agent 被要求了什么。
+[schema](../schema.md#runagentinput) 定义它的形状；本页说明每个字段附带的义务。生产者可以（MAY）在 `RUN_STARTED.input` 上回显该输入，这样没有发起请求的消费者也能看到 Agent 被要求了什么。
 
-## 身份（identity）
+## 身份
 
-`threadId` 命名这次对话，`runId` 命名该输入所请求的那次运行（run）；二者都是必需（REQUIRED）的。流（stream）上的每次运行（run）都在其边界事件（event）——`RUN_STARTED` 与 `RUN_FINISHED`，也就是携带身份（identity）的那两个——上携带该输入的 `threadId`，而每次运行（run）的两个边界事件（event）必须（MUST）在 `runId` 上一致。被请求的运行（run）回显该输入的 `runId`；重放的运行（run）携带自己的 `runId`。`parentRunId` 是可选（OPTIONAL）的，用于在某个 Agent 把另一个 Agent 作为独立运行（run）启动时，命名催生出本次运行（run）的那次运行（run）。
+`threadId` 命名这次对话，`runId` 命名该输入所请求的那次运行；二者都是必需（REQUIRED）的。流上的每次运行都在其边界事件——`RUN_STARTED` 与 `RUN_FINISHED`，也就是携带身份的那两个——上携带该输入的 `threadId`，而每次运行的两个边界事件必须（MUST）在 `runId` 上一致。被请求的运行回显该输入的 `runId`；重放的运行携带自己的 `runId`。`parentRunId` 是可选（OPTIONAL）的，用于在某个 Agent 把另一个 Agent 作为独立运行启动时，命名催生出本次运行的那次运行。
 
 ## `protocolVersion`
 
-在 schema 中属于可选（OPTIONAL），因为缺席本身就标识出一个来自协议（protocol）携带版本（version）之前的对端（peer）——但实现本版本（version）的消费者（consumer）必须（MUST）在这里声明自己所说的版本（version），除非它知道自己的对端（peer）早于该字段（field），于是省略该成员，而不是冒旧解析器（parser）拒绝它的风险。生产者（producer）在 `RUN_STARTED` 上以自己的声明（declaration）作答；规则见[版本管理（versioning）](versioning.md#版本协商version-negotiation)。
+在 schema 中属于可选（OPTIONAL），因为缺席本身就标识出一个来自协议携带版本之前的对端——但实现本版本的消费者必须（MUST）在这里声明自己所说的版本，除非它知道自己的对端早于该字段，于是省略该成员，而不是冒旧解析器拒绝它的风险。生产者在 `RUN_STARTED` 上以自己的声明作答；规则见[版本管理](versioning.md#版本协商)。
 
 ## `messages`
 
-必需（REQUIRED）。到目前为止的对话，按顺序排列。生产者（producer）必须（MUST）把它当作展示给它的完整历史——协议（protocol）没有用于传递更早轮次（turn）的旁路（side channel）。
+必需（REQUIRED）。到目前为止的对话，按顺序排列。生产者必须（MUST）把它当作展示给它的完整历史——协议没有用于传递更早轮次的旁路。
 
-消息（message）类型及其内容（content）形状——包括以 URL、内联数据（inline data）或[提供方文件句柄（provider file handle）](#提供方文件句柄provider-file-handle)形式携带文本、图像、音频、视频与文档的多模态（multimodal）[`ContentPart`](../schema.md#contentpart)，出现在用户消息（message）上，也出现在应答[前端工具调用（frontend tool call）](../events/tool-calls.md#前端工具frontend-tools)的工具消息（message）上——都是 schema 的事。另有两条行为性规则：
+消息类型及其内容形状——包括以 URL、内联数据或[提供方文件句柄](#提供方文件句柄)形式携带文本、图像、音频、视频与文档的多模态[`ContentPart`](../schema.md#contentpart)，出现在用户消息上，也出现在应答[前端工具调用](../events/tool-calls.md#前端工具)的工具消息上——都是 schema 的事。另有两条行为性规则：
 
-- 无法使用某个内容片段（content part）的生产者（producer）——比如一个没有视觉能力的模型（model）被塞进一张图像——不得（MUST NOT）因此让运行（run）失败。跳过它用不了的内容并继续，才是符合一致性（conformance）的行为；而在降级（downgrade）的*出站*（outgoing）路径上丢失内容（content）是另一回事，需要附带一条告警（warning，见[版本管理（versioning）](versioning.md)）。
-- 活动消息（activity message）从不回传给生产者（producer）：消费者（consumer）在发送前必须（MUST）把它们从 `messages` 中剥离（strip）。它们是消费者（consumer）的渲染素材（material），而不是 Agent 据以恢复（resume）的对话。
+- 无法使用某个内容片段的生产者——比如一个没有视觉能力的模型被塞进一张图像——不得（MUST NOT）因此让运行失败。跳过它用不了的内容并继续，才是符合一致性（conformance）的行为；而在降级的*出站*路径上丢失内容是另一回事，需要附带一条告警（warning，见[版本管理](versioning.md)）。
+- 活动消息从不回传给生产者：消费者在发送前必须（MUST）把它们从 `messages` 中剥离。它们是消费者的渲染素材，而不是 Agent 据以恢复（resume）的对话。
 
-### 提供方文件句柄（provider file handle）
+### 提供方文件句柄
 
-媒体片段（media part）的 `source` 说明其字节在哪里：内联携带（`data`）、可通过 URL 获取（`url`），或已经以提供方（provider）签发的句柄（handle）形式存在于模型提供方（model provider）处（`file`）——OpenAI 或 Anthropic 的文件 id、Gemini 的文件 URI、只有该提供方（provider）能读取的存储 URL。[`file` 来源（source）](../schema.md#filesource)之所以存在，是因为句柄（handle）既不是另外两者中的任何一个：它不携带字节，而且除签发它的提供方（provider）之外无人能获取，所以把它放进 `url` 只会招致其他每个对端（peer）去尝试。
+媒体片段的 `source` 说明其字节在哪里：内联携带（`data`）、可通过 URL 获取（`url`），或已经以提供方签发的句柄形式存在于模型提供方处（`file`）——OpenAI 或 Anthropic 的文件 id、Gemini 的文件 URI、只有该提供方能读取的存储 URL。[`file` 来源](../schema.md#filesource)之所以存在，是因为句柄既不是另外两者中的任何一个：它不携带字节，而且除签发它的提供方之外无人能获取，所以把它放进 `url` 只会招致其他每个对端去尝试。
 
-- `file` 来源（source）的 `value` 是不透明的。对端（peer）不得（MUST NOT）获取它、解析它，或从中读出一个 scheme；它要么把该句柄（handle）交给提供方（provider），要么就不使用该片段（part）。
-- `provider` 在生产者（producer）知情时命名签发该句柄（handle）的一方。它是可选（OPTIONAL）的——Agent 本来就知道自己在跟哪个提供方（provider）对话——存在时应当（SHOULD）取 [`TokenUsage.provider`](../schema.md#tokenusage) 所用的小写厂商标识（vendor id），这样对端（peer）在发送前就能判断某个句柄（handle）是否自己可用。
-- 生产者（producer）拿到一个自己无法解析的句柄（handle）——属于另一个提供方（provider）的、属于未知提供方（provider）的、已经过期的——其所处情形已被上面第一条规则覆盖：它不得（MUST NOT）让运行（run）失败，而是跳过该片段（part）继续，并且应当（SHOULD）说明这一点。句柄（handle）的生存期是提供方（provider）的事；想要携带过期信息的生产者（producer）把它放在该片段（part）的 `metadata` 里。
-- 来源（source）的各分支（arm）构成一个封闭集合（closed set）：某个来源（source）的 `type` 若不被对端（peer）识别，就会校验失败，而不是被原样传递下去。这正是该分支（arm）放在 1.0 而不是某个更晚的次版本（minor version）中的原因——按 1.0 构建的消费者（consumer）永远不可能把它传递下去。
+- `file` 来源的 `value` 是不透明的。对端不得（MUST NOT）获取它、解析它，或从中读出一个 scheme；它要么把该句柄交给提供方，要么就不使用该片段。
+- `provider` 在生产者知情时命名签发该句柄的一方。它是可选（OPTIONAL）的——Agent 本来就知道自己在跟哪个提供方对话——存在时应当（SHOULD）取 [`TokenUsage.provider`](../schema.md#tokenusage) 所用的小写厂商标识，这样对端在发送前就能判断某个句柄是否自己可用。
+- 生产者拿到一个自己无法解析的句柄——属于另一个提供方的、属于未知提供方的、已经过期的——其所处情形已被上面第一条规则覆盖：它不得（MUST NOT）让运行失败，而是跳过该片段继续，并且应当（SHOULD）说明这一点。句柄的生存期是提供方的事；想要携带过期信息的生产者把它放在该片段的 `metadata` 里。
+- 来源的各分支构成一个封闭集合：某个来源的 `type` 若不被对端识别，就会校验失败，而不是被原样传递下去。这正是该分支放在 1.0 而不是某个更晚的次版本中的原因——按 1.0 构建的消费者永远不可能把它传递下去。
 
 ## `tools`
 
-可选（OPTIONAL）。应用（application）自己的工具——*前端工具（frontend tool）*——为本次运行（run）提供给 Agent：名称、描述，以及在该工具接受参数（args）时的一份参数 schema。执行它们的是应用（application），不是 Agent；调用其中一个会把控制权交回并跨越运行（run）边界（boundary），这一往返过程由[工具调用（tool call）](../events/tool-calls.md#前端工具frontend-tools)规定。
+可选（OPTIONAL）。应用自己的工具——*前端工具*——为本次运行提供给 Agent：名称、描述，以及在该工具接受参数时的一份参数 schema。执行它们的是应用，不是 Agent；调用其中一个会把控制权交回并跨越运行边界，这一往返过程由[工具调用（tool call）](../events/tool-calls.md#前端工具)规定。
 
-缺席的列表与空列表含义相同：没有工具。生产者（producer）必须（MUST）完全按对待空列表的方式对待缺失的 `tools`，而消费者（consumer）可以（MAY）省略空列表，而不是发送 `[]`。
+缺席的列表与空列表含义相同：没有工具。生产者必须（MUST）完全按对待空列表的方式对待缺失的 `tools`，而消费者可以（MAY）省略空列表，而不是发送 `[]`。
 
 ## `context`
 
-可选（OPTIONAL）。应用（application）希望放入 Agent 上下文（context）的信息，以描述–取值对的形式给出。它存在的目的是被*注入*：生产者（producer）应当（SHOULD）把每个条目（entry）作为该次运行（run）的立足材料（grounding）的一部分提供给模型（model）。具体怎么做——系统提示词（system prompt）、前置说明（preamble），还是框架对上下文（context）的任何处理方式——是生产者（producer）的事；协议（protocol）只规定上下文（context）是给模型（model）看的，而不是传输（transport）的记账（bookkeeping）。
+可选（OPTIONAL）。应用希望放入 Agent 上下文的信息，以描述–取值对的形式给出。它存在的目的是被*注入*：生产者应当（SHOULD）把每个条目作为该次运行的立足材料的一部分提供给模型。具体怎么做——系统提示词、前置说明，还是框架对上下文的任何处理方式——是生产者的事；协议只规定上下文是给模型看的，而不是传输（transport）的记账。
 
 缺席与空值的含义相同，与 `tools` 完全一样。
 
 ## `state`
 
-可选（OPTIONAL）。运行（run）起始时的状态（state）——消费者（consumer）最后达成一致的值，通常就是上一次运行（run）的[状态（state）事件（event）](../events/state.md)留下的东西。缺席的 `state` 意味着空对象（empty object）：尚未达成任何一致，而 `{}` 就是什么都没有。发出状态增量（state delta）的生产者（producer）必须（MUST）以该值为基准计算它们，直到它自己的第一份快照（snapshot）将其替换。
+可选（OPTIONAL）。运行起始时的状态（state）——消费者最后达成一致的值，通常就是上一次运行的[状态事件](../events/state.md)留下的东西。缺席的 `state` 意味着空对象：尚未达成任何一致，而 `{}` 就是什么都没有。发出状态增量的生产者必须（MUST）以该值为基准计算它们，直到它自己的第一份快照（snapshot）将其替换。
 
 ## `forwardedProps`
 
-可选（OPTIONAL）。一个应用特定的通道，原封不动地透传给 Agent。可以是任意 JSON 值，但不能是整个 `null`，那意味着该字段（field）被省略。载荷（payload）内部的 `null` 值会被保留。协议（protocol）不给该载荷（payload）附加任何含义，中间方（intermediaries）不得（MUST NOT）改动它。
+可选（OPTIONAL）。一个应用特定的通道，原封不动地透传给 Agent。可以是任意 JSON 值，但不能是整个 `null`，那意味着该字段被省略。载荷内部的 `null` 值会被保留。协议不给该载荷附加任何含义，中间方不得（MUST NOT）改动它。
 
 ## `resume`
 
-可选（OPTIONAL）。当本次运行（run）从上次运行（run）的中断（interrupt）处继续时，对这些中断（interrupt）的应答。各条目（entry）及其义务规定于[中断与恢复（interrupt、resume）](patterns/interrupt-resume.md)。
+可选（OPTIONAL）。当本次运行从上次运行的中断（interrupt）处继续时，对这些中断的应答。各条目及其义务规定于[中断与恢复（interrupt、resume）](patterns/interrupt-resume.md)。
 
-## 错误处理（error handling）
+## 错误处理
 
-生产者（producer）无法解析的输入，或是畸形（malformed）的输入——某个已知字段（field）携带了 schema 拒绝的取值——会在 `RUN_STARTED` 之前经由传输（transport）的错误路径被拒绝：运行（run）从未开始，也不存在可供 `RUN_ERROR` 通行的流（stream）。拒绝如何投递，是每个[传输绑定（transport binding）](transports/index.md)自己的事。
+生产者无法解析的输入，或是畸形的输入——某个已知字段携带了 schema 拒绝的取值——会在 `RUN_STARTED` 之前经由传输的错误路径被拒绝：运行从未开始，也不存在可供 `RUN_ERROR` 通行的流。拒绝如何投递，是每个[传输绑定](transports/index.md)自己的事。
 
-输入中未被识别的成员不算畸形（malformed）。[处理模型（processing model）](processing.md)的不对称性同样约束这个方向：生产者（producer）遇到自己不认识的输入素材（material）时，会带着告警（warning）剥离（strip）它并继续运行（run），这样更新版消费者（consumer）的输入就不会在旧版生产者（producer）那里被弹回。
+输入中未被识别的成员不算畸形。[处理模型](processing.md)的不对称性同样约束这个方向：生产者遇到自己不认识的输入素材时，会带着告警剥离它并继续运行，这样更新版消费者的输入就不会在旧版生产者那里被弹回。

@@ -6,14 +6,14 @@ description: "了解 Agent User Interaction Protocol 中的 Agent"
 # Agent
 
 Agent 是 AG-UI 协议中处理请求并生成响应的核心组件。无论底层实现如何，Agent
-都为前端（front-end）应用建立了一种标准化的方式，使其能够通过一致的接口与 AI 服务通信。
+都为前端应用建立了一种标准化的方式，使其能够通过一致的接口与 AI 服务通信。
 
 ## 什么是 Agent？
 
 在 AG-UI 中，Agent 是一个类，它：
 
 1. 管理对话状态（state）与消息（message）历史
-2. 处理传入的消息（message）与上下文
+2. 处理传入的消息与上下文
 3. 通过事件（event）驱动的流式接口生成响应
 4. 遵循标准化的通信协议
 
@@ -28,9 +28,9 @@ Agent 可以实现为与任何 AI 服务连接，包括：
 
 AG-UI 中的所有 Agent 都继承 `AbstractAgent` 类，该类为以下方面提供基础：
 
-- 状态（state）管理
-- 消息（message）历史追踪
-- 事件（event）流处理
+- 状态管理
+- 消息历史追踪
+- 事件流处理
 - 工具使用
 
 ```typescript
@@ -47,10 +47,10 @@ class MyAgent extends AbstractAgent {
 
 AG-UI Agent 有若干关键组件：
 
-1. **配置**：Agent ID、线程（thread）ID 和初始状态（state）
-2. **消息（message）**：包含用户消息（message）与助手消息（message）的对话历史
-3. **状态（state）**：在多次交互之间持久保存的结构化数据
-4. **事件（event）**：用于与客户端（client）通信的标准化消息（message）
+1. **配置**：Agent ID、线程（thread）ID 和初始状态
+2. **消息**：包含用户消息与助手消息的对话历史
+3. **状态**：在多次交互之间持久保存的结构化数据
+4. **事件**：用于与客户端（client）通信的标准化消息
 5. **工具**：Agent 可用于与外部系统交互的函数
 
 ## Agent 类型
@@ -59,7 +59,7 @@ AG-UI 提供不同的 Agent 实现以适应各种需求：
 
 ### AbstractAgent
 
-所有 Agent 都继承的基类。它负责核心事件（event）处理、状态（state）管理和消息（message）历史。
+所有 Agent 都继承的基类。它负责核心事件处理、状态管理和消息历史。
 
 ### HttpAgent
 
@@ -162,7 +162,7 @@ AG-UI 协议中的 Agent 提供丰富的能力（capability），可实现复杂
 
 ### 交互式通信
 
-Agent 通过事件（event）流与前端（front-end）应用建立双向通信通道。这使得以下能力（capability）成为可能：
+Agent 通过事件流与前端应用建立双向通信通道。这使得以下能力成为可能：
 
 - 逐字符实时流式响应
 - 用户与 AI 之间的即时反馈循环
@@ -171,7 +171,7 @@ Agent 通过事件（event）流与前端（front-end）应用建立双向通信
 
 ### 工具使用
 
-Agent 可以使用工具来执行操作并访问外部资源。重要的是，工具由前端（front-end）应用定义并传入
+Agent 可以使用工具来执行操作并访问外部资源。重要的是，工具由前端应用定义并传入
 Agent，从而形成灵活且可扩展的系统：
 
 ```typescript
@@ -207,13 +207,13 @@ agent.runAgent({
 })
 ```
 
-工具通过一系列事件（event）被调用：
+工具通过一系列事件被调用：
 
 1. `TOOL_CALL_START`：表示一次工具调用（tool call）的开始
-2. `TOOL_CALL_ARGS`：流式发送（streams）该工具调用（tool call）的参数
-3. `TOOL_CALL_END`：标记该工具调用（tool call）的完成
+2. `TOOL_CALL_ARGS`：流式发送该工具调用的参数
+3. `TOOL_CALL_END`：标记该工具调用的完成
 
-随后，前端（front-end）应用可以执行该工具并将结果返回给 Agent。这种双向流程可支持复杂的人在回路（human in the loop）
+随后，前端应用可以执行该工具并将结果返回给 Agent。这种双向流程可支持复杂的人在回路
 工作流，其中：
 
 - Agent 可以请求执行特定操作
@@ -231,12 +231,12 @@ agent.runAgent({
 
 ### 状态（state）管理
 
-Agent 维护在多次交互之间持久保存的结构化状态（state）。该状态（state）可以：
+Agent 维护在多次交互之间持久保存的结构化状态。该状态可以：
 
-- 通过 `STATE_DELTA` 事件（event）增量（delta）更新
-- 通过 `STATE_SNAPSHOT` 事件（event）完整刷新
-- 由 Agent 和前端（front-end）共同访问
-- 用于存储用户偏好、对话上下文或应用状态（state）
+- 通过 `STATE_DELTA` 事件增量（delta）更新
+- 通过 `STATE_SNAPSHOT` 事件完整刷新
+- 由 Agent 和前端共同访问
+- 用于存储用户偏好、对话上下文或应用状态
 
 ```typescript
 // Accessing agent state
@@ -257,18 +257,18 @@ AG-UI 支持 Agent 之间的交接与协作：
 
 - Agent 可以将任务委派给其他专门的 Agent
 - 多个 Agent 可以在协调一致的工作流中协同工作
-- 状态（state）与上下文可以在 Agent 之间传递
-- 前端（front-end）在 Agent 切换过程中保持一致的用户体验
+- 状态与上下文可以在 Agent 之间传递
+- 前端在 Agent 切换过程中保持一致的用户体验
 
 例如，当需要编程帮助时，通用助手 Agent 可以交接给专门的编程 Agent，同时传递对话
 上下文和具体要求。
 
-### 人在回路（human in the loop）工作流
+### 人在回路工作流
 
 Agent 支持人工介入与协助：
 
 - Agent 可以就特定决策请求人类输入
-- 前端（front-end）可以暂停 Agent 执行，并在收到人类反馈后恢复（resume）执行
+- 前端可以暂停 Agent 执行，并在收到人类反馈后恢复（resume）执行
 - 人类专家可以在 Agent 输出最终确定之前审阅并修改
 - 混合工作流将 AI 的效率与人类的判断结合起来
 
@@ -276,11 +276,11 @@ Agent 支持人工介入与协助：
 
 ### 对话记忆
 
-Agent 维护完整的对话消息（message）历史：
+Agent 维护完整的对话消息历史：
 
 - 过去的交互会影响未来的响应
-- 消息（message）历史在客户端（client）与服务端（server）之间同步
-- 消息（message）可以包含丰富内容（文本、结构化数据、引用）
+- 消息历史在客户端与服务端（server）之间同步
+- 消息可以包含丰富内容（文本、结构化数据、引用）
 - 可以管理上下文窗口以聚焦相关信息
 
 ```typescript
@@ -299,12 +299,12 @@ agent.messages.push({
 
 Agent 可以发出关于其内部过程的元数据（metadata）：
 
-- 通过自定义事件（event）发出推理（reasoning）步骤（step）
+- 通过自定义事件发出推理步骤
 - 性能指标与耗时信息
 - 来源引用与参考追踪
 - 不同响应选项的置信度分数
 
-这使前端（front-end）能够透明地展示 Agent 的决策过程，并帮助用户理解结论是如何得出的。
+这使前端能够透明地展示 Agent 的决策过程，并帮助用户理解结论是如何得出的。
 
 ## 使用 Agent
 
@@ -374,7 +374,7 @@ const agent = new HttpAgent({
 
 ## Agent 状态（state）管理
 
-AG-UI Agent 在多次交互之间维护状态（state）：
+AG-UI Agent 在多次交互之间维护状态：
 
 ```typescript
 // Access current state
@@ -389,9 +389,9 @@ const clonedAgent = agent.clone()
 
 ## 结论
 
-Agent 是 AG-UI 协议的基础，提供了一种标准化方式来连接前端（front-end）应用与 AI 服务。通过
+Agent 是 AG-UI 协议的基础，提供了一种标准化方式来连接前端应用与 AI 服务。通过
 实现 `AbstractAgent` 类，你可以为任何 AI 服务创建自定义集成，同时为应用保持一致
 的接口。
 
-事件（event）驱动的架构促成了实时、流式的交互，这对现代 AI 应用至关重要；而标准化的协议
+事件驱动的架构促成了实时、流式的交互，这对现代 AI 应用至关重要；而标准化的协议
 则确保不同实现之间的兼容性。

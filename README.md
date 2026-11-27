@@ -36,7 +36,7 @@
 ## 翻译约定
 
 - 术语、结构对齐、代码保真、链接与组件处理规则见 [TRANSLATING.md](./TRANSLATING.md)。
-- 用词以 [glossary.md](./glossary.md) 为准；术语每处出现都写作「中文（原文）」。
+- 用词以 [glossary.md](./glossary.md) 为准；只有白名单里的词带「中文（原文）」标注，且每页只标首次出现。
 - 协议标识符、字段名、事件名、JSON 键永不翻译。
 
 ## 本地校验

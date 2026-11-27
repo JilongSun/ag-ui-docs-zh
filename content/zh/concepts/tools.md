@@ -1,13 +1,13 @@
 ---
 title: "工具"
-description: "理解工具，以及工具如何支撑人在回路（human in the loop）的 AI 工作流"
+description: "理解工具，以及工具如何支撑人在回路的 AI 工作流"
 ---
 
 # 工具
 
 工具是 AG-UI 协议中的一个基础概念，它使 AI Agent 能够与外部系统交互，并把人的判断纳入到工作流之中。
 
-AG-UI 区分两类工具：由 Agent 后端定义的工具，以及由客户端（client）在运行（run）时提供的工具。后端定义的工具保留在后端 Agent 或框架的配置中。客户端（client）定义的工具通过 `RunAgentInput.tools` 传入，使 Agent 能够回调应用特定的前端（frontend）行为，例如 UI 操作、审批，或由用户参与的工作流。
+AG-UI 区分两类工具：由 Agent 后端定义的工具，以及由客户端（client）在运行（run）时提供的工具。后端定义的工具保留在后端 Agent 或框架的配置中。客户端定义的工具通过 `RunAgentInput.tools` 传入，使 Agent 能够回调应用特定的前端（frontend）行为，例如 UI 操作、审批，或由用户参与的工作流。
 
 ## 什么是工具？
 
@@ -39,11 +39,11 @@ interface Tool {
 }
 ```
 
-`parameters` 字段使用 [JSON Schema](https://json-schema.org/) 定义工具所接受的参数结构。该 schema 同时被 Agent（用于生成合法的工具调用（tool call））和前端（frontend）（用于校验并解析工具参数）使用。
+`parameters` 字段使用 [JSON Schema](https://json-schema.org/) 定义工具所接受的参数结构。该 schema 同时被 Agent（用于生成合法的工具调用（tool call））和前端（用于校验并解析工具参数）使用。
 
 ## 前端（frontend）定义的工具
 
-AG-UI 工具系统的一个关键之处在于：工具在前端（frontend）定义，并在执行期间传递给 Agent：
+AG-UI 工具系统的一个关键之处在于：工具在前端定义，并在执行期间传递给 Agent：
 
 ```typescript
 // Define tools in the frontend
@@ -76,18 +76,18 @@ agent.runAgent({
 
 这种做法有几个优点：
 
-1. **前端（frontend）控制**：由前端（frontend）决定 Agent 可以使用哪些能力（capability）
-2. **动态能力（capability）**：可以根据用户权限、上下文或应用状态（state）添加或移除工具
-3. **关注点分离**：Agent 专注于推理（reasoning），而前端（frontend）负责工具的实现
+1. **前端控制**：由前端决定 Agent 可以使用哪些能力
+2. **动态能力**：可以根据用户权限、上下文或应用状态（state）添加或移除工具
+3. **关注点分离**：Agent 专注于推理，而前端负责工具的实现
 4. **安全**：敏感操作由应用控制，而不是由 Agent 控制
 
-`RunAgentInput.tools` 仅用于这些由客户端（client）提供的工具，并不是用来承载后端 Agent 可用的全部工具。如果你的集成包含后端工具，应在后端框架中定义它们，或通过 Agent 的能力（capability）（capabilities）来声明它们，而不是从客户端（client）发送它们的 schema。
+`RunAgentInput.tools` 仅用于这些由客户端提供的工具，并不是用来承载后端 Agent 可用的全部工具。如果你的集成包含后端工具，应在后端框架中定义它们，或通过 Agent 的能力来声明它们，而不是从客户端发送它们的 schema。
 
 ## 工具调用（tool call）生命周期
 
 当 Agent 需要使用某个工具时，它会遵循一套标准化的事件（event）序列：
 
-1. **ToolCallStart**：表示一次工具调用（tool call）的开始，携带唯一的 ID 和工具名
+1. **ToolCallStart**：表示一次工具调用的开始，携带唯一的 ID 和工具名
 
    ```typescript
    {
@@ -98,7 +98,7 @@ agent.runAgent({
    }
    ```
 
-2. **ToolCallArgs**：在工具参数生成的过程中流式发送（streams）这些参数
+2. **ToolCallArgs**：在工具参数生成的过程中流式发送这些参数
 
    ```typescript
    {
@@ -124,7 +124,7 @@ agent.runAgent({
    }
    ```
 
-3. **ToolCallEnd**：标记该工具调用（tool call）的完成
+3. **ToolCallEnd**：标记该工具调用的完成
    ```typescript
    {
      type: EventType.TOOL_CALL_END,
@@ -132,24 +132,24 @@ agent.runAgent({
    }
    ```
 
-前端（frontend）会累积这些增量（delta），从而构造出完整的工具调用（tool call）参数。一旦工具调用（tool call）完成，前端（frontend）就可以执行该工具，并把结果返回给 Agent。
+前端会累积这些增量（delta），从而构造出完整的工具调用参数。一旦工具调用完成，前端就可以执行该工具，并把结果返回给 Agent。
 
 ### 工具调用（tool call）元数据（metadata）
 
-上述三个事件（event）都可以携带一个 `metadata` 对象，而该对象会累积到**工具调用（tool call）自身**上，而不是累积到拥有它的 assistant 消息（message）上：
+上述三个事件都可以携带一个 `metadata` 对象，而该对象会累积到**工具调用自身**上，而不是累积到拥有它的 assistant 消息（message）上：
 
 ```typescript
 assistantMessage.toolCalls[0].metadata
 // { provider: "anthropic", latencyMs: 84 }
 ```
 
-这是有意为之的。一条 assistant 消息（message）可以拥有多个工具调用（tool call），因此把它们的元数据（metadata）折叠进父级，会让结果取决于这些调用恰好交错发生的顺序。让每个工具调用（tool call）各自持有自己的元数据（metadata），才能保持含义无歧义。
+这是有意为之的。一条 assistant 消息可以拥有多个工具调用，因此把它们的元数据（metadata）折叠进父级，会让结果取决于这些调用恰好交错发生的顺序。让每个工具调用各自持有自己的元数据，才能保持含义无歧义。
 
-`ToolCallResult` 则不同——它会创建一条工具消息（message），因此它的元数据（metadata）会像其他构建消息（message）的事件（event）一样合并进那条消息（message）。参见 [Metadata](metadata.md)。
+`ToolCallResult` 则不同——它会创建一条工具消息，因此它的元数据会像其他构建消息的事件一样合并进那条消息。参见 [Metadata](metadata.md)。
 
 ## 工具结果（tool result）
 
-工具执行完成之后，结果会以“工具消息（message）”的形式发送回 Agent：
+工具执行完成之后，结果会以“工具消息”的形式发送回 Agent：
 
 ```typescript
 {
@@ -160,7 +160,7 @@ assistantMessage.toolCalls[0].metadata
 }
 ```
 
-这条消息（message）会成为对话历史的一部分，使 Agent 能够在后续回复中引用并纳入工具的结果。
+这条消息会成为对话历史的一部分，使 Agent 能够在后续回复中引用并纳入工具的结果。
 
 如果工具没有成功，就把 `error` 设为失败信息：
 
@@ -174,19 +174,19 @@ assistantMessage.toolCalls[0].metadata
 }
 ```
 
-`error` 是协议用来表达客户端（client）工具失败的方式。若没有它，失败的工具与成功的工具就无法区分——前端（frontend）恰好在 `content` 里放入的内容，就是 Agent 唯一能依据的东西。完整的 `ToolMessage` 结构参见 [Messages](messages.md)。
+`error` 是协议用来表达客户端工具失败的方式。若没有它，失败的工具与成功的工具就无法区分——前端恰好在 `content` 里放入的内容，就是 Agent 唯一能依据的东西。完整的 `ToolMessage` 结构参见 [Messages](messages.md)。
 
-## 人在回路（human in the loop）工作流
+## 人在回路工作流
 
-AG-UI 的工具系统在实现人在回路（human in the loop）工作流方面尤为强大。通过定义请求人的输入或确认的工具，开发者可以打造出将自主运行（run）与人的判断无缝融合的 AI 体验。
+AG-UI 的工具系统在实现人在回路工作流方面尤为强大。通过定义请求人的输入或确认的工具，开发者可以打造出将自主运行与人的判断无缝融合的 AI 体验。
 
 例如：
 
 1. Agent 需要做出一个重要决策
 2. Agent 调用 `confirmAction` 工具，并附上关于该决策的细节
-3. 前端（frontend）向用户展示确认对话框
+3. 前端向用户展示确认对话框
 4. 用户给出自己的输入
-5. 前端（frontend）把用户的决定发送回 Agent
+5. 前端把用户的决定发送回 Agent
 6. Agent 在知晓用户选择的情况下继续处理
 
 这种模式支持如下用例：
@@ -348,6 +348,6 @@ useCopilotAction({
 
 ## 结语
 
-AG-UI 中的工具弥合了 AI 推理（reasoning）与现实世界操作之间的差距，使结合 AI 与人类智能各自优势的复杂工作流成为可能。通过在前端（frontend）定义工具并传递给 Agent，开发者可以打造出 AI 与人高效协作的交互体验。
+AG-UI 中的工具弥合了 AI 推理与现实世界操作之间的差距，使结合 AI 与人类智能各自优势的复杂工作流成为可能。通过在前端定义工具并传递给 Agent，开发者可以打造出 AI 与人高效协作的交互体验。
 
-工具系统在实现人在回路（human in the loop）工作流方面尤为强大：在这类工作流中，AI 可以给出操作建议，但把关键决策交由人来做。这使自动化与人的判断取得平衡，创造出既强大又值得信赖的 AI 体验。
+工具系统在实现人在回路工作流方面尤为强大：在这类工作流中，AI 可以给出操作建议，但把关键决策交由人来做。这使自动化与人的判断取得平衡，创造出既强大又值得信赖的 AI 体验。

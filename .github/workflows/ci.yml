@@ -28,3 +28,7 @@ jobs:
         run: node scripts/check-terms.mjs
       - name: Translation coverage
         run: node scripts/check-coverage.mjs
+      # 非阻断：标注合规性需要人工判断个别情形，先只提供可见性
+      - name: Annotation audit (non-blocking)
+        continue-on-error: true
+        run: node scripts/audit-terms.mjs

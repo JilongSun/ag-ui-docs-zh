@@ -24,20 +24,19 @@
 ## 三、术语
 
 1. 术语以 [glossary.md](./glossary.md) 为准。
-2. 每处出现都标注原文，形式为「中文（原文）」，括号用全角：
+2. **只标注受控词表里的词。** 词表见 [glossary.md](./glossary.md) 的「标注白名单」。形式为「中文（原文）」，括号用全角：
 
-   > 状态（state）在运行（run）生命周期（lifecycle）内累积。
+   > 状态（state）在运行（run）生命周期内累积。
 
-   同一句内重复出现同样标注，不省略。
+   `lifecycle` 不在白名单里，所以不加标注。
+
+   - **标题与 frontmatter** 照常标注（它们本身就是术语标签）。
+   - **正文**里同一个词只标首次出现，之后不再重复，否则每页会有上百个括号，反而读不下去。
 3. 注释里写「不译」的词（`agent`、`schema`、`JSON Patch`、`SSE`、`Protobuf` 等）保持英文原样，不加中文标注。
 4. 协议标识符**永不翻译**：事件名（`RUN_STARTED`）、字段名（`subagentRunId`）、类型名（`TextMessageContentEvent`）、JSON 键、枚举值、包名、URL。
-5. **标注的英文词必须是该处原文真实用到的词，且不能多写。** 中文会把多个英文词收敛成一个中文词，常见陷阱见 [glossary.md](./glossary.md) 的「易混提醒」：
+5. **标注的英文必须从当前这句原文里取，不能反查术语表。** 术语表是「英文 → 中文」的方向；反过来用会错，因为中文把多个英文词收敛成了同一个词（传输 ← `transport` / `transfer` / `transmission`；线上格式 ← `wire` / `wire schema` / `wire format`；流式 ← `stream` 词族）。
 
-   - `transport`（传输层，协议概念）与 `transfer`/`transmission`（普通的"数据传输"）都译作「传输」，但只有前者加标注；
-   - `stream` 词族译作「流式」，不要写成「流式传输」再标 `(transport)`；
-   - 原文只说 `wire` 就不要标成 `(wire format)`，`wire schema` 也不能简写成 `wire`。
-
-   判断依据是**原文那一段实际写了什么**，不是术语表里最接近的词条。
+   判断依据永远是**原文那一段实际写了什么**：原文只说 `wire` 就不可能标出 `wire format`。若原文用的词不在白名单里，就不加标注。
 6. RFC 2119 / BCP 14 关键词按下表处理，并且每处都标注原文：
 
    | 原文 | 译文 |

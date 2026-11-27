@@ -1,6 +1,8 @@
 # 术语表
 
-本表是译文用词的唯一依据。规则见 [TRANSLATING.md](./TRANSLATING.md)：标「不译」的词保持英文原样；其余术语**每处出现**都写成「中文（原文）」。
+本表是译文用词的依据：它规定**英文怎么译成中文**（所以几乎所有词条都该查）。
+
+但**反过来不成立**——不能看到中文「传输」就去表里找一个英文贴上去。中文把 `transport` / `transfer` / `transmission` 都收敛成「传输」，反查必然出错。译文里的「中文（原文）」标注只允许来自下面这份**标注白名单**，且英文必须是**当前这句原文**里真实出现的词。规则见 [TRANSLATING.md](./TRANSLATING.md)。
 
 ## 协议与规范
 
@@ -179,6 +181,25 @@
 | REQUIRED | 必需（REQUIRED） |
 | OPTIONAL | 可选（OPTIONAL） |
 
+## 标注白名单
+
+只有这些词允许带「（原文）」标注。标题与 frontmatter 照常标注；**正文只标首次出现**，之后不再重复。其余术语只按本表译成中文，不加英文。
+
+| 词条 | 词条 | 词条 | 词条 |
+| --- | --- | --- | --- |
+| `subagent` | `run` | `run input` | `thread` |
+| `message` | `event` | `event family` | `tool call` |
+| `tool result` | `state` | `snapshot` | `delta` |
+| `interrupt` | `resume` | `reasoning` | `activity` |
+| `metadata` | `capability` | `transport` | `binding` |
+| `producer` | `consumer` | `client` | `server` |
+| `middleware` | `frontend` | `wire` | `required` |
+| `optional` | `normative` | `conformance` | `deprecated` |
+
+不在表内的常见误标：`stream` 词族（流式）、`transfer` / `transmission`（普通的数据传输）、`validate` / `validation`（校验）、`application`（应用）、`invocation`（调用）。这些词一律不加标注。
+
+新增词条的前提是它在整套文档里中英一对一，不会引出「到底是 `wire` 还是 `wire format`」这类歧义。
+
 ## 易混提醒
 
 中文会把多个英文词收敛成同一个词，标注时必须回到原文看**实际用的是哪个词**：
@@ -188,7 +209,7 @@
 | 传输 | `transport`（协议概念）/ `transfer`、`transmission`（普通词语） | 原文讲 SSE、Protobuf 这类绑定 → `transport`，加标注；讲"数据传过去" → 普通词语，**不加标注** |
 | 流式 | `stream` 词族 | 标注用原文词形（`streamed` / `streaming` / `streamable`），**不要标成 transport** |
 
-`npm run audit:terms` 会校验这些易混词；另外它还会检查**多词标注里的每个词是否都出现在原文小节**——「线上格式（wire format）」落在只写了 `wire` 的地方，就是靠这条报出来的。
+`npm run audit:terms` 会检查三件事：标注是否出自白名单、同一页是否只标了一次、该英文词是否真的出现在对应的上游小节。
 
 ## 禁用译法
 

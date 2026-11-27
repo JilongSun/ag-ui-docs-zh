@@ -1,80 +1,23 @@
 /**
- * 审计译文里「术语标注」的英文词是否真的出现在对应上游原文中。
+ * 审计内联标注「中文（原文）」是否合规。只报告，不阻断。
  *
- * 为什么只查易混组：中文会把多个英文词收敛成同一个词，最典型的是
- * 「传输」同时对应 transport（传输层，协议概念）与 transfer / transmission
- * （普通的“数据传输”）；「流式」对应 stream 词族。这类标注错了会让读者
- * 误以为在讲传输层，而结构与代码校验都发现不了。
+ * 三条规则：
+ *  1. 英文部分必须来自受控词表（scripts/annotations.mjs，与 glossary.md 的白名单同源）。
+ *  2. 正文里同一个词只标一次（标题与 frontmatter 不占配额）。
+ *  3. 该词必须真的出现在对应的上游文本里——这是为了拦住"从中文反查术语表贴上去"
+ *     的做法：中文把 transport / transfer / transmission 都译作「传输」，看到「传输」
+ *     就去查表，必然会在只写 transfer 的句子上标出 transport。
  *
- * 为什么不在整份文件里查：按标题切小节后逐节比对。标题的数量与顺序已由
+ * 第 3 条按小节比对（正文）或整篇比对（frontmatter、标题）：标题的数量与顺序由
  * check-parity 保证一致，是可靠锚点；小节级比对能容忍中英文段落合并。
- *
- * 为什么不做词形归一：做过一版，validation/validates、normative/normatively、
- * capability/capabilities 会大面积误报（实测 287 处），需要真正的英语词干化。
- * 这里只对容易混淆的词族做精确比对：同族内任一词形算通过，跨族不算。
- *
- * 非阻断：默认退出码 0，只输出清单供人工确认。扩展方式是在 FAMILY 里加一组。
  */
 import fs from "node:fs";
 import path from "node:path";
+import { CONTENT_DIR, cachedUpstreamPath, contentToUpstream } from "./config.mjs";
+import { ANNOTATION_ALLOWLIST, termAppears } from "./annotations.mjs";
 
-const CONTENT_DIR = "content/zh";
-const CACHE_DIR = ".cache/upstream";
-
-const FAMILY = {
-  transport: ["transport", "transports"],
-  stream: ["stream", "streams", "streaming", "streamed", "streamable"],
-  transfer: ["transfer", "transfers", "transferred", "transmission", "transmitted", "transmit"],
-  wire: ["wire", "wires"],
-};
-
-/** 单词的常见词形，用于多词标注逐词核对。 */
-function wordForms(word) {
-  const forms = [word, `${word}s`];
-  if (word.endsWith("y")) forms.push(`${word.slice(0, -1)}ies`);
-  if (/(s|x|z|ch|sh)$/.test(word)) forms.push(`${word}es`);
-  return forms;
-}
-
-const wordRegex = (word) =>
-  new RegExp(`(?<![a-z])(?:${wordForms(word).map(escapeRegex).join("|")})(?![a-z])`, "i");
-
-const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const familyOf = (term) =>
-  Object.entries(FAMILY).find(([, forms]) => forms.includes(term))?.[0] ?? null;
-
-const familyRegex = (family) =>
-  new RegExp(`(?<![a-z])(?:${FAMILY[family].join("|")})(?![a-z])`, "i");
-
-function sections(markdown) {
-  // 正文第一行的文件行号：frontmatter 行数 + 1
-  const cut = markdown.startsWith("---\n") ? markdown.indexOf("\n---\n") + 5 : 0;
-  const baseLine = markdown.slice(0, cut).split("\n").length;
-  const lines = markdown.slice(cut).split("\n");
-  const out = [{ heading: "(开头)", text: [], annotations: [] }];
-  let fence = false;
-  lines.forEach((line, index) => {
-    if (/^\s*```/.test(line)) {
-      fence = !fence;
-      return;
-    }
-    if (fence) return;
-    const heading = line.match(/^#{1,6}\s+(.*)$/);
-    if (heading) {
-      out.push({ heading: heading[1].trim(), text: [], annotations: [], line: index + 1 });
-      return;
-    }
-    const current = out[out.length - 1];
-    current.text.push(line);
-    for (const match of line.matchAll(/（([a-z][a-zA-Z .\-']*)）/g)) {
-      const term = match[1].trim().toLowerCase();
-      current.annotations.push({ term, family: familyOf(term), line: baseLine + index });
-    }
-  });
-  for (const section of out) section.plain = section.text.join(" ");
-  return out;
-}
+const ALLOWED = new Set(ANNOTATION_ALLOWLIST);
+const ANNOTATION = /（([a-z][a-zA-Z .\-']*)）/g;
 
 function walk(dir) {
   const files = [];
@@ -86,49 +29,118 @@ function walk(dir) {
   return files.sort();
 }
 
+/** 每一行归属的小节文本；frontmatter 与标题返回 null（改用整篇比对）。 */
+function sectionTextAt(markdown) {
+  const lines = markdown.split("\n");
+  const frontmatterEnd = markdown.startsWith("---\n")
+    ? lines.findIndex((line, index) => index > 0 && line.trim() === "---")
+    : -1;
+
+  const sectionStarts = [];
+  let fence = false;
+  lines.forEach((line, index) => {
+    if (/^\s*```/.test(line)) {
+      fence = !fence;
+      return;
+    }
+    if (fence) return;
+    if (/^#{1,6}\s+/.test(line)) sectionStarts.push(index);
+  });
+
+  const sectionTexts = sectionStarts.map((start, i) => {
+    const end = i + 1 < sectionStarts.length ? sectionStarts[i + 1] : lines.length;
+    return lines.slice(start + 1, end).join(" ");
+  });
+
+  /** lineNumber 为 1 基 */
+  return (lineNumber) => {
+    const index = lineNumber - 1;
+    if (index <= frontmatterEnd) return null;
+    if (/^#{1,6}\s+/.test(lines[index])) return null;
+    let sectionIndex = -1;
+    for (let i = 0; i < sectionStarts.length; i += 1) {
+      if (sectionStarts[i] < index) sectionIndex = i;
+      else break;
+    }
+    if (sectionIndex === -1) return null;
+    return { heading: lines[sectionStarts[sectionIndex]].trim(), text: sectionTexts[sectionIndex] };
+  };
+}
+
+/** glossary.md 的「标注白名单」必须与代码里的受控词表一致。 */
+function glossaryAllowlist() {
+  const text = fs.readFileSync("glossary.md", "utf8");
+  const start = text.indexOf("## 标注白名单");
+  if (start === -1) return null;
+  const end = text.indexOf("\n## ", start + 1);
+  const block = text.slice(start, end === -1 ? undefined : end);
+  const rows = block.split("\n").filter((line) => line.trimStart().startsWith("|"));
+  return new Set([...rows.join("\n").matchAll(/`([a-z][a-z .\-']*)`/g)].map((m) => m[1].trim()));
+}
+
 const problems = [];
+
+const documented = glossaryAllowlist();
+if (!documented) {
+  problems.push("glossary.md 找不到「标注白名单」小节");
+} else {
+  for (const term of ALLOWED) if (!documented.has(term)) problems.push(`glossary.md 白名单缺 \`${term}\``);
+  for (const term of documented) if (!ALLOWED.has(term)) problems.push(`glossary.md 白名单多出 \`${term}\``);
+}
+
 let checked = 0;
 
 for (const file of walk(CONTENT_DIR)) {
-  const upstream = path.join(CACHE_DIR, "docs", `${path.relative(CONTENT_DIR, file).replace(/\.md$/, ".mdx")}`);
-  if (!fs.existsSync(upstream)) continue;
-
-  const translated = sections(fs.readFileSync(file, "utf8"));
-  const original = sections(fs.readFileSync(upstream, "utf8"));
   const rel = file.split(path.sep).join("/");
+  const markdown = fs.readFileSync(file, "utf8");
+  const upstreamPath = cachedUpstreamPath(contentToUpstream(file));
+  const hasUpstream = fs.existsSync(upstreamPath);
+  const wholeUpstream = hasUpstream ? fs.readFileSync(upstreamPath, "utf8") : "";
+  const locate = sectionTextAt(markdown);
 
-  if (translated.length !== original.length) {
-    problems.push(`${rel}: 小节数 ${translated.length} != 上游 ${original.length}，无法逐节比对`);
-    continue;
-  }
+  const frontmatterEnd = markdown.startsWith("---\n")
+    ? markdown.split("\n").findIndex((line, index) => index > 0 && line.trim() === "---")
+    : -1;
+  const proseSeen = new Map();
+  markdown.split("\n").forEach((line, index) => {
+    const structural = index <= frontmatterEnd || /^#{1,6}\s+/.test(line);
+    for (const match of line.matchAll(ANNOTATION)) {
+      const term = match[1].trim().toLowerCase();
+      const lineNumber = index + 1;
+      checked += 1;
 
-  translated.forEach((section, index) => {
-    const source = original[index].plain;
-    for (const { term, family, line } of section.annotations) {
-      const heading = original[index].heading;
-      if (family) {
-        checked += 1;
-        if (!familyRegex(family).test(source)) {
-          problems.push(`${rel}:${line} 「${term}」未在原文小节「${heading}」出现`);
+      if (!ALLOWED.has(term)) {
+        problems.push(`${rel}:${lineNumber} 「${term}」不在受控词表内`);
+        continue;
+      }
+      // 标题与 frontmatter 不占配额：那里本来就该带标注
+      if (!structural) {
+        if (proseSeen.has(term)) {
+          problems.push(`${rel}:${lineNumber} 「${term}」重复标注（正文首次在第 ${proseSeen.get(term)} 行）`);
+          continue;
+        }
+        proseSeen.set(term, lineNumber);
+      }
+
+      if (!hasUpstream) continue;
+      const section = locate(lineNumber);
+      if (!section) {
+        if (!termAppears(term, wholeUpstream)) {
+          problems.push(`${rel}:${lineNumber} 「${term}」未在原文出现`);
         }
         continue;
       }
-      if (!term.includes(" ")) continue;
-      checked += 1;
-      const missing = term.split(/[\s-]+/).filter(Boolean).filter((word) => !wordRegex(word).test(source));
-      if (missing.length) {
-        problems.push(
-          `${rel}:${line} 「${term}」的 ${missing.map((w) => `\`${w}\``).join("、")} 未在原文小节「${heading}」出现`,
-        );
+      if (!termAppears(term, section.text)) {
+        problems.push(`${rel}:${lineNumber} 「${term}」未在原文小节「${section.heading}」出现`);
       }
     }
   });
 }
 
 if (problems.length) {
-  console.log(`audit-terms: ${problems.length} 处可疑标注（共比对 ${checked} 处）\n`);
+  console.log(`audit-terms: ${problems.length} 处问题（共检查 ${checked} 处标注）\n`);
   for (const problem of problems) console.log(`  - ${problem}`);
-  console.log("\n请逐条对照原文：标注的英文词必须真的出现在对应小节里，否则改用原文的实际用词，或去掉标注。");
+  console.log("\n标注只能从当前原文里取词。若原文用的是另一个词，改用那个词或不加标注。");
 } else {
-  console.log(`audit-terms: ${checked} 处术语标注均与原文一致。`);
+  console.log(`audit-terms: ${checked} 处标注合规（受控词表、每页一次、原文可证）。`);
 }

@@ -9,7 +9,7 @@ AG-UI 协议中的 Agent 可以通过**能力（capability）发现**在运行�
 
 ## 工作原理
 
-`AbstractAgent` 声明了一个可选的 `getCapabilities()` 方法，它返回一份带类型的快照（snapshot），描述该 Agent 当前支持的全部内容。该方法由了解自身能力（capability）的 Agent 子类实现——例如 LangGraph 与 ADK 集成，或者你自己的实现——而不是由裸的 `HttpAgent` 实现，因为后者只是一种传输（transport）层，并没有可供询问的发现端点。对于没有实现该方法的 Agent，下面这个可选调用会返回 `undefined`：
+`AbstractAgent` 声明了一个可选的 `getCapabilities()` 方法，它返回一份带类型的快照（snapshot），描述该 Agent 当前支持的全部内容。该方法由了解自身能力的 Agent 子类实现——例如 LangGraph 与 ADK 集成，或者你自己的实现——而不是由裸的 `HttpAgent` 实现，因为后者只是一种传输（transport）层，并没有可供询问的发现端点。对于没有实现该方法的 Agent，下面这个可选调用会返回 `undefined`：
 
 ```typescript
 // 任何实现了 getCapabilities() 的 AbstractAgent 子类；
@@ -32,46 +32,46 @@ if (capabilities?.reasoning?.supported) {
 - **仅做发现** —— Agent 声明自己能做什么，不存在协商
 - **动态** —— 返回调用时刻的当前状态（state）（例如新增了工具，下一次调用就会反映出它们）
 - **可选** —— 未实现该方法的 Agent 返回 `undefined`
-- **缺省即未知** —— 只声明你确实支持的内容，被省略的字段意味着该能力（capability）未被声明
+- **缺省即未知** —— 只声明你确实支持的内容，被省略的字段意味着该能力未被声明
 
 ## AgentCapabilities 接口
 
-能力（capability）被组织成若干带类型的类别，每一类代表 Agent 功能的不同方面：
+能力被组织成若干带类型的类别，每一类代表 Agent 功能的不同方面：
 
 ```typescript
 interface AgentCapabilities {
   /** Agent 的身份与元数据（metadata）。 */
   identity?: IdentityCapabilities
-  /** 支持的传输（transport）机制（SSE、WebSocket、二进制（binary）等）。 */
+  /** 支持的传输机制（SSE、WebSocket、二进制等）。 */
   transport?: TransportCapabilities
   /** Agent 提供的工具以及工具调用（tool call）配置。 */
   tools?: ToolsCapabilities
   /** 输出格式支持（结构化输出、MIME 类型）。 */
   output?: OutputCapabilities
-  /** 状态（state）与记忆管理（快照（snapshot）、增量（delta）、持久化）。 */
+  /** 状态与记忆管理（快照、增量（delta）、持久化）。 */
   state?: StateCapabilities
   /** 多 Agent 协同（委派、交接、子 Agent（subagent））。 */
   multiAgent?: MultiAgentCapabilities
-  /** 推理（reasoning）与思考支持（思维链、加密思考）。 */
+  /** 推理与思考支持（思维链、加密思考）。 */
   reasoning?: ReasoningCapabilities
   /** 按方向（输入与输出）组织的多模态输入/输出支持。 */
   multimodal?: MultimodalCapabilities
   /** 执行控制与限制（代码执行、超时、迭代上限）。 */
   execution?: ExecutionCapabilities
-  /** 人在回路（human in the loop）支持（审批、干预、反馈）。 */
+  /** 人在回路支持（审批、干预、反馈）。 */
   humanInTheLoop?: HumanInTheLoopCapabilities
-  /** 标准类别未覆盖的、集成特有的能力（capability）。 */
+  /** 标准类别未覆盖的、集成特有的能力。 */
   custom?: Record<string, unknown>
 }
 ```
 
-`custom` 字段是一个逃生舱口，用于容纳那些无法归入标准类别的、集成特有的能力（capability）。
+`custom` 字段是一个逃生舱口，用于容纳那些无法归入标准类别的、集成特有的能力。
 
 ## 能力（capability）类别
 
 ### Identity（身份）
 
-关于 Agent 的基本元数据（metadata）。适用于发现类 UI、Agent 市场以及调试。当你希望客户端（client）展示 Agent 信息，或者在存在多个 Agent、需要用户挑选其一的时候，就设置这些字段。
+关于 Agent 的基本元数据。适用于发现类 UI、Agent 市场以及调试。当你希望客户端展示 Agent 信息，或者在存在多个 Agent、需要用户挑选其一的时候，就设置这些字段。
 
 ```typescript
 interface IdentityCapabilities {
@@ -94,7 +94,7 @@ interface IdentityCapabilities {
 
 ### 传输（transport）
 
-声明 Agent 支持哪些传输（transport）机制。客户端（client）据此选择最佳的连接策略。只对 Agent 实际处理的传输（transport）把标志设为 `true`——对不支持的传输（transport），要么省略，要么设为 `false`。
+声明 Agent 支持哪些传输机制。客户端据此选择最佳的连接策略。只对 Agent 实际处理的传输把标志设为 `true`——对不支持的传输，要么省略，要么设为 `false`。
 
 ```typescript
 interface TransportCapabilities {
@@ -102,9 +102,9 @@ interface TransportCapabilities {
   streaming?: boolean
   /** 如果 Agent 接受持久化的 WebSocket 连接，则设为 `true`。 */
   websocket?: boolean
-  /** 如果 Agent 支持 AG-UI 二进制（binary）协议（基于 HTTP 的 protobuf），则设为 `true`。 */
+  /** 如果 Agent 支持 AG-UI 二进制协议（基于 HTTP 的 protobuf），则设为 `true`。 */
   httpBinary?: boolean
-  /** 如果 Agent 能在一次运行（run）结束后通过 webhook 发送异步更新，则设为 `true`。 */
+  /** 如果 Agent 能在一次运行结束后通过 webhook 发送异步更新，则设为 `true`。 */
   pushNotifications?: boolean
   /** 如果 Agent 支持通过序列号恢复（resume）被中断（interrupt）的流，则设为 `true`。 */
   resumable?: boolean
@@ -113,19 +113,19 @@ interface TransportCapabilities {
 
 ### Tools（工具）
 
-工具调用（tool call）能力（capability）。区分 Agent 自身提供的工具（列在 `items` 中）与客户端（client）在运行（run）时通过 `RunAgentInput.tools` 传入的工具。当你的 Agent 能调用函数、搜索网页、执行代码等时，启用此项。
+工具调用能力。区分 Agent 自身提供的工具（列在 `items` 中）与客户端在运行时通过 `RunAgentInput.tools` 传入的工具。当你的 Agent 能调用函数、搜索网页、执行代码等时，启用此项。
 
 ```typescript
 interface ToolsCapabilities {
-  /** 如果 Agent 具备工具调用（tool call）能力（capability），则设为 `true`。设为 `false` 表示即使存在
-   *  items 也明确声明工具调用（tool call）已停用。 */
+  /** 如果 Agent 具备工具调用能力，则设为 `true`。设为 `false` 表示即使存在
+   *  items 也明确声明工具调用已停用。 */
   supported?: boolean
   /** 该 Agent 自身提供的工具（完整的 JSON Schema 定义）。
-   *  它们与客户端（client）在 `RunAgentInput.tools` 中传入的工具不同。 */
+   *  它们与客户端在 `RunAgentInput.tools` 中传入的工具不同。 */
   items?: Tool[]
-  /** 如果 Agent 能在单个步骤（step）内并发调用多个工具，则设为 `true`。 */
+  /** 如果 Agent 能在单个步骤内并发调用多个工具，则设为 `true`。 */
   parallelCalls?: boolean
-  /** 如果 Agent 接受并使用客户端（client）在运行时提供的工具，则设为 `true`。 */
+  /** 如果 Agent 接受并使用客户端在运行时提供的工具，则设为 `true`。 */
   clientProvided?: boolean
 }
 ```
@@ -146,26 +146,26 @@ interface OutputCapabilities {
 
 ### State（状态（state））
 
-状态（state）与记忆管理能力（capability）。它们告诉客户端（client）该 Agent 如何处理共享状态（state），以及对话上下文是否跨运行（run）持久保留。
+状态与记忆管理能力。它们告诉客户端该 Agent 如何处理共享状态，以及对话上下文是否跨运行持久保留。
 
 ```typescript
 interface StateCapabilities {
-  /** 如果 Agent 会发出 `STATE_SNAPSHOT` 事件（event）（整体替换状态（state）），则设为 `true`。 */
+  /** 如果 Agent 会发出 `STATE_SNAPSHOT` 事件（event）（整体替换状态），则设为 `true`。 */
   snapshots?: boolean
-  /** 如果 Agent 会发出 `STATE_DELTA` 事件（event）（JSON Patch 增量（delta）更新），则设为 `true`。 */
+  /** 如果 Agent 会发出 `STATE_DELTA` 事件（JSON Patch 增量更新），则设为 `true`。 */
   deltas?: boolean
   /** 如果 Agent 在当前线程（thread）之外还具备长期记忆，则设为 `true`
    *  （例如向量库、知识库或跨会话召回）。 */
   memory?: boolean
-  /** 如果状态（state）在同一线程（thread）内的多次运行（run）之间保持不变，则设为 `true`。
-   *  为 `false` 时，每次运行（run）都会重置状态（state）。 */
+  /** 如果状态在同一线程内的多次运行之间保持不变，则设为 `true`。
+   *  为 `false` 时，每次运行都会重置状态。 */
   persistentState?: boolean
 }
 ```
 
 ### Multi-Agent（多 Agent）
 
-多 Agent 协同能力（capability）。当你的 Agent 能够编排其他 Agent，或把工作交接给其他 Agent 时，启用这些项。
+多 Agent 协同能力。当你的 Agent 能够编排其他 Agent，或把工作交接给其他 Agent 时，启用这些项。
 
 ```typescript
 interface MultiAgentCapabilities {
@@ -175,30 +175,30 @@ interface MultiAgentCapabilities {
   delegation?: boolean
   /** 如果 Agent 能把整段对话完全转移给另一个 Agent，则设为 `true`。 */
   handoffs?: boolean
-  /** 该 Agent 可调用的子 Agent（subagent） 列表。有助于客户端（client）构建 Agent 选择 UI。 */
+  /** 该 Agent 可调用的子 Agent 列表。有助于客户端构建 Agent 选择 UI。 */
   subagents?: Array<{ name: string; description?: string }>
 }
 ```
 
 ### Reasoning（推理（reasoning））
 
-推理（reasoning）与思考能力（capability）。当你的 Agent 对外暴露其内部思考过程（例如思维链、扩展思考）时，启用这些项。
+推理与思考能力。当你的 Agent 对外暴露其内部思考过程（例如思维链、扩展思考）时，启用这些项。
 
 ```typescript
 interface ReasoningCapabilities {
-  /** 如果 Agent 产出对客户端（client）可见的推理（reasoning）/思考 token，则设为 `true`。 */
+  /** 如果 Agent 产出对客户端可见的推理/思考 token，则设为 `true`。 */
   supported?: boolean
-  /** 如果推理（reasoning） token 是增量（delta）流式返回的（而非一次性全部返回），则设为 `true`。 */
+  /** 如果推理 token 是增量流式返回的（而非一次性全部返回），则设为 `true`。 */
   streaming?: boolean
-  /** 如果推理（reasoning）内容是加密的（零数据保留模式），则设为 `true`。
-   *  客户端（client）应预期收到不透明的 `encryptedValue` 字段，而不是可读内容。 */
+  /** 如果推理内容是加密的（零数据保留模式），则设为 `true`。
+   *  客户端应预期收到不透明的 `encryptedValue` 字段，而不是可读内容。 */
   encrypted?: boolean
 }
 ```
 
 ### Multimodal（多模态）
 
-多模态输入与输出支持，按 `input` 与 `output` 两个子对象组织，使客户端（client）可以分别查询 Agent 接受什么、产出什么。客户端（client）借此显示或隐藏文件上传按钮、录音器、图片选择器等。
+多模态输入与输出支持，按 `input` 与 `output` 两个子对象组织，使客户端可以分别查询 Agent 接受什么、产出什么。客户端借此显示或隐藏文件上传按钮、录音器、图片选择器等。
 
 ```typescript
 interface MultimodalInputCapabilities {
@@ -231,30 +231,30 @@ interface MultimodalCapabilities {
 
 ### Execution（执行）
 
-执行控制与限制。声明这些项，客户端（client）才能对一次 Agent 运行（run）可能耗时多久或经历多少步骤（step）建立预期。
+执行控制与限制。声明这些项，客户端才能对一次 Agent 运行可能耗时多久或经历多少步骤建立预期。
 
 ```typescript
 interface ExecutionCapabilities {
-  /** 如果 Agent 能在一次运行（run）中执行代码（例如 Python、JavaScript），则设为 `true`。 */
+  /** 如果 Agent 能在一次运行中执行代码（例如 Python、JavaScript），则设为 `true`。 */
   codeExecution?: boolean
   /** 如果代码执行发生在沙箱/隔离环境中，则设为 `true`。
    *  仅在 `codeExecution` 为 `true` 时才有意义。 */
   sandboxed?: boolean
-  /** Agent 每次运行（run）会执行的最大工具调用（tool call）/推理（reasoning）迭代次数。
-   *  有助于客户端（client）展示进度或设定超时预期。 */
+  /** Agent 每次运行会执行的最大工具调用/推理迭代次数。
+   *  有助于客户端展示进度或设定超时预期。 */
   maxIterations?: number
   /** Agent 超时前的最长实际耗时（以毫秒计）。 */
   maxExecutionTime?: number
 }
 ```
 
-### Human-in-the-Loop（人在回路（human in the loop））
+### Human-in-the-Loop（人在回路）
 
-人在回路（human in the loop）交互支持。当你的 Agent 能在继续之前暂停执行、请求人工输入、审批或反馈时，启用这些项。
+人在回路交互支持。当你的 Agent 能在继续之前暂停执行、请求人工输入、审批或反馈时，启用这些项。
 
 ```typescript
 interface HumanInTheLoopCapabilities {
-  /** 如果 Agent 支持任何形式的人在回路（human in the loop）交互，则设为 `true`。 */
+  /** 如果 Agent 支持任何形式的人在回路交互，则设为 `true`。 */
   supported?: boolean
   /** 如果 Agent 能在执行敏感操作（例如发送邮件、删除数据）之前
    *  暂停并请求显式审批，则设为 `true`。 */
@@ -264,24 +264,24 @@ interface HumanInTheLoopCapabilities {
   /** 如果 Agent 能吸收用户反馈（点赞/点踩、纠正）以改进它在
    *  当前会话内的行为，则设为 `true`。 */
   feedback?: boolean
-  /** 如果 Agent 参与 AG-UI 中断（interrupt）协议（发出带
+  /** 如果 Agent 参与 AG-UI 中断协议（发出带
    *  `outcome: { type: "interrupt", interrupts: [...] }` 的 `RunFinished`，
    *  接受 `RunAgentInput.resume`），则设为 `true`。 */
   interrupts?: boolean
-  /** 如果工具调用（tool call）中断（interrupt）在恢复（resume）载荷中接受 `editedArgs`，则设为 `true`。
+  /** 如果工具调用中断在恢复载荷中接受 `editedArgs`，则设为 `true`。
    *  仅在 `interrupts` 为 `true` 时才有意义。 */
   approveWithEdits?: boolean
 }
 ```
 
 > [!NOTE]
-> 完整的协议规范见[中断（interrupt）](interrupts.md)。
+> 完整的协议规范见[中断](interrupts.md)。
 
 ## 实现 getCapabilities()
 
 ### 自定义 Agent
 
-在你的 Agent 子类上实现 `getCapabilities()`，只返回你确实支持的能力（capability）：
+在你的 Agent 子类上实现 `getCapabilities()`，只返回你确实支持的能力：
 
 ```typescript
 import { AbstractAgent, AgentCapabilities } from "@ag-ui/client"
@@ -315,7 +315,7 @@ class MyAgent extends AbstractAgent {
 
 ### 动态能力（capability）
 
-由于 `getCapabilities()` 返回的是实时快照（snapshot），它会反映 Agent 的当前状态（state）：
+由于 `getCapabilities()` 返回的是实时快照，它会反映 Agent 的当前状态：
 
 ```typescript
 const agent = new MyAgent(config)
@@ -339,17 +339,17 @@ console.log(caps.tools?.items?.length) // 6
 ```typescript
 const capabilities = await agent.getCapabilities?.()
 
-// 只有支持时才显示推理（reasoning）面板
+// 只有支持时才显示推理面板
 if (capabilities?.reasoning?.supported) {
   showReasoningPanel()
 }
 
-// 只有存在子 Agent（subagent） 时才显示选择器
+// 只有存在子 Agent 时才显示选择器
 if (capabilities?.multiAgent?.subagents?.length) {
   showSubAgentSelector(capabilities.multiAgent.subagents)
 }
 
-// 只有支持人在回路（human in the loop）时才显示审批 UI
+// 只有支持人在回路时才显示审批 UI
 if (capabilities?.humanInTheLoop?.approvals) {
   enableApprovalWorkflow()
 }
@@ -357,7 +357,7 @@ if (capabilities?.humanInTheLoop?.approvals) {
 
 ### 特性开关
 
-停用 Agent 不支持的特性，而不是在运行（run）时失败：
+停用 Agent 不支持的特性，而不是在运行时失败：
 
 ```typescript
 const capabilities = await agent.getCapabilities?.()
@@ -369,7 +369,7 @@ const canStream = capabilities?.transport?.streaming === true
 
 ### 自定义能力（capability）
 
-通过 `custom` 字段访问集成特有的能力（capability）：
+通过 `custom` 字段访问集成特有的能力：
 
 ```typescript
 const capabilities = await agent.getCapabilities?.()
